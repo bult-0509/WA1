@@ -1,0 +1,19 @@
+.runtime/
+.venv/
+__pycache__/
+*.pyc
+data/raw/
+dist/
+.work/
+docs/ai-process/raw/
+*.log
+
+# Local conversation evidence and generated inspection output are not public repository content.
+docs/ai-process/可见对话记录.txt
+docs/ai-process/本科项目精简反馈.png
+*.inspect.ndjson
+.env
+.env.*
+!.env.example
+.streamlit/secrets.toml
+运行记录/

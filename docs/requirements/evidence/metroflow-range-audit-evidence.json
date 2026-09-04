@@ -1,0 +1,68 @@
+{
+  "url": "https://ndownloader.figshare.com/files/54996461",
+  "range_header": "bytes=1217730635-1217732736",
+  "status": 206,
+  "total_zip_bytes": 1217732737,
+  "files": [
+    {
+      "name": "MetroFlow/metroData_InOutFlow.csv",
+      "compressed_bytes": 50109160,
+      "uncompressed_bytes": 217442845,
+      "crc32": "7f82d0c5",
+      "local_header_offset": 1033,
+      "compression_method": 8
+    },
+    {
+      "name": "MetroFlow/metroData_ODFlow.csv",
+      "compressed_bytes": 1167566896,
+      "uncompressed_bytes": 12103814516,
+      "crc32": "d7e3352f",
+      "local_header_offset": 50111546,
+      "compression_method": 8
+    },
+    {
+      "name": "MetroFlow/stationInfo.csv",
+      "compressed_bytes": 8702,
+      "uncompressed_bytes": 19872,
+      "crc32": "363c7e45",
+      "local_header_offset": 1217678796,
+      "compression_method": 8
+    },
+    {
+      "name": "MetroFlow/MetaData/workday_calendar.csv",
+      "compressed_bytes": 280,
+      "uncompressed_bytes": 1367,
+      "crc32": "fd2c302c",
+      "local_header_offset": 1217688416,
+      "compression_method": 8
+    },
+    {
+      "name": "MetroFlow/MetaData/shanghai_weatherHourly.csv",
+      "compressed_bytes": 41472,
+      "uncompressed_bytes": 146252,
+      "crc32": "e1a9c1c6",
+      "local_header_offset": 1217689040,
+      "compression_method": 8
+    }
+  ],
+  "inout_compressed_data_offset": 1128,
+  "inout_compressed_data_last_byte": 50110287,
+  "range_bytes_received_total": 135276,
+  "sample_columns": [
+    "date",
+    "timeslot",
+    "startTime",
+    "endTime",
+    "station",
+    "inFlow",
+    "outFlow",
+    "CinFlow",
+    "HBOinFlow",
+    "NHBinFlow",
+    "CoutFlow",
+    "HBOoutFlow",
+    "NHBoutFlow"
+  ],
+  "sample_first_row": "20170501,0,060000,061000,112,29,32,9,15,5,11,13,8",
+  "full_file_crc_verified": false
+}

@@ -1,0 +1,58 @@
+{
+  "word": [
+    {
+      "file": "AI辅助过程附件.docx",
+      "paragraphs": 26,
+      "tables": 1,
+      "inline_images": 0,
+      "structural_check": "pass",
+      "visual_check": "not rendered: soffice unavailable"
+    },
+    {
+      "file": "吴旻昊-调研报告.docx",
+      "paragraphs": 25,
+      "tables": 0,
+      "inline_images": 0,
+      "structural_check": "pass",
+      "visual_check": "not rendered: soffice unavailable"
+    },
+    {
+      "file": "期末报告.docx",
+      "paragraphs": 117,
+      "tables": 5,
+      "inline_images": 10,
+      "structural_check": "pass",
+      "visual_check": "not rendered: soffice unavailable"
+    },
+    {
+      "file": "朱子墨-调研报告.docx",
+      "paragraphs": 26,
+      "tables": 0,
+      "inline_images": 0,
+      "structural_check": "pass",
+      "visual_check": "not rendered: soffice unavailable"
+    },
+    {
+      "file": "林睿信-调研报告.docx",
+      "paragraphs": 25,
+      "tables": 0,
+      "inline_images": 0,
+      "structural_check": "pass",
+      "visual_check": "not rendered: soffice unavailable"
+    },
+    {
+      "file": "邢雨晨-调研报告.docx",
+      "paragraphs": 26,
+      "tables": 0,
+      "inline_images": 0,
+      "structural_check": "pass",
+      "visual_check": "not rendered: soffice unavailable"
+    }
+  ],
+  "slides": {
+    "count": 12,
+    "notes": 12,
+    "bounds_check": "pass",
+    "visual_check": "12 rendered slides inspected; slides7/9 corrected"
+  }
+}

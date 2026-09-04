@@ -1,0 +1,2582 @@
+{
+  "source_url": "https://ndownloader.figshare.com/files/54996461",
+  "range": "bytes=1128-50110287",
+  "expected_compressed_bytes": 50109160,
+  "expected_uncompressed_bytes": 217442845,
+  "expected_crc32": "7f82d0c5",
+  "status": "profile_complete",
+  "http_status": 206,
+  "content_range": "bytes 1128-50110287/1217732737",
+  "compressed_bytes": 50109160,
+  "uncompressed_bytes": 217442845,
+  "crc32": "7f82d0c5",
+  "sha256": "e4ebf0cd4ac0a1e3716916df52efc6764946279f58c14e8d0b115383a614e534",
+  "deflate_eof": true,
+  "data_path": "D:\\桌面\\正经事\\作业\\软件开发实践1\\data\\raw\\metroData_InOutFlow.csv",
+  "rows": 3788892,
+  "columns": [
+    "date",
+    "timeslot",
+    "startTime",
+    "endTime",
+    "station",
+    "inFlow",
+    "outFlow",
+    "CinFlow",
+    "HBOinFlow",
+    "NHBinFlow",
+    "CoutFlow",
+    "HBOoutFlow",
+    "NHBoutFlow"
+  ],
+  "column_count": 13,
+  "dtypes": {
+    "date": "int64",
+    "timeslot": "int64",
+    "startTime": "int64",
+    "endTime": "int64",
+    "station": "int64",
+    "inFlow": "int64",
+    "outFlow": "int64",
+    "CinFlow": "int64",
+    "HBOinFlow": "int64",
+    "NHBinFlow": "int64",
+    "CoutFlow": "int64",
+    "HBOoutFlow": "int64",
+    "NHBoutFlow": "int64"
+  },
+  "null_counts": {
+    "date": 0,
+    "timeslot": 0,
+    "startTime": 0,
+    "endTime": 0,
+    "station": 0,
+    "inFlow": 0,
+    "outFlow": 0,
+    "CinFlow": 0,
+    "HBOinFlow": 0,
+    "NHBinFlow": 0,
+    "CoutFlow": 0,
+    "HBOoutFlow": 0,
+    "NHBoutFlow": 0
+  },
+  "date_min": 20170501,
+  "date_max": 20170831,
+  "date_count": 123,
+  "dates": [
+    20170501,
+    20170502,
+    20170503,
+    20170504,
+    20170505,
+    20170506,
+    20170507,
+    20170508,
+    20170509,
+    20170510,
+    20170511,
+    20170512,
+    20170513,
+    20170514,
+    20170515,
+    20170516,
+    20170517,
+    20170518,
+    20170519,
+    20170520,
+    20170521,
+    20170522,
+    20170523,
+    20170524,
+    20170525,
+    20170526,
+    20170527,
+    20170528,
+    20170529,
+    20170530,
+    20170531,
+    20170601,
+    20170602,
+    20170603,
+    20170604,
+    20170605,
+    20170606,
+    20170607,
+    20170608,
+    20170609,
+    20170610,
+    20170611,
+    20170612,
+    20170613,
+    20170614,
+    20170615,
+    20170616,
+    20170617,
+    20170618,
+    20170619,
+    20170620,
+    20170621,
+    20170622,
+    20170623,
+    20170624,
+    20170625,
+    20170626,
+    20170627,
+    20170628,
+    20170629,
+    20170630,
+    20170701,
+    20170702,
+    20170703,
+    20170704,
+    20170705,
+    20170706,
+    20170707,
+    20170708,
+    20170709,
+    20170710,
+    20170711,
+    20170712,
+    20170713,
+    20170714,
+    20170715,
+    20170716,
+    20170717,
+    20170718,
+    20170719,
+    20170720,
+    20170721,
+    20170722,
+    20170723,
+    20170724,
+    20170725,
+    20170726,
+    20170727,
+    20170728,
+    20170729,
+    20170730,
+    20170731,
+    20170801,
+    20170802,
+    20170803,
+    20170804,
+    20170805,
+    20170806,
+    20170807,
+    20170808,
+    20170809,
+    20170810,
+    20170811,
+    20170812,
+    20170813,
+    20170814,
+    20170815,
+    20170816,
+    20170817,
+    20170818,
+    20170819,
+    20170820,
+    20170821,
+    20170822,
+    20170823,
+    20170824,
+    20170825,
+    20170826,
+    20170827,
+    20170828,
+    20170829,
+    20170830,
+    20170831
+  ],
+  "missing_calendar_dates": [],
+  "station_count": 302,
+  "station_ids": [
+    112,
+    113,
+    114,
+    119,
+    124,
+    127,
+    128,
+    129,
+    130,
+    131,
+    132,
+    133,
+    134,
+    135,
+    136,
+    137,
+    138,
+    234,
+    237,
+    238,
+    239,
+    240,
+    247,
+    248,
+    250,
+    251,
+    253,
+    254,
+    255,
+    256,
+    257,
+    258,
+    259,
+    260,
+    261,
+    262,
+    263,
+    312,
+    314,
+    325,
+    327,
+    328,
+    329,
+    330,
+    331,
+    332,
+    333,
+    334,
+    335,
+    336,
+    337,
+    338,
+    339,
+    413,
+    415,
+    416,
+    420,
+    421,
+    423,
+    426,
+    502,
+    503,
+    505,
+    507,
+    508,
+    509,
+    510,
+    511,
+    512,
+    513,
+    622,
+    623,
+    624,
+    625,
+    626,
+    628,
+    629,
+    633,
+    634,
+    635,
+    636,
+    637,
+    638,
+    639,
+    640,
+    642,
+    643,
+    644,
+    645,
+    646,
+    647,
+    648,
+    721,
+    722,
+    723,
+    724,
+    725,
+    726,
+    727,
+    728,
+    729,
+    730,
+    731,
+    732,
+    733,
+    734,
+    735,
+    738,
+    744,
+    745,
+    747,
+    749,
+    750,
+    751,
+    753,
+    820,
+    821,
+    822,
+    823,
+    824,
+    825,
+    827,
+    828,
+    830,
+    834,
+    837,
+    838,
+    840,
+    842,
+    843,
+    844,
+    845,
+    846,
+    847,
+    848,
+    849,
+    918,
+    919,
+    920,
+    921,
+    922,
+    923,
+    924,
+    925,
+    926,
+    927,
+    928,
+    929,
+    930,
+    931,
+    932,
+    937,
+    940,
+    941,
+    943,
+    1018,
+    1019,
+    1020,
+    1043,
+    1044,
+    1045,
+    1046,
+    1047,
+    1048,
+    1051,
+    1055,
+    1058,
+    1060,
+    1062,
+    1063,
+    1064,
+    1065,
+    1066,
+    1067,
+    1068,
+    1114,
+    1115,
+    1116,
+    1117,
+    1118,
+    1119,
+    1120,
+    1131,
+    1132,
+    1133,
+    1134,
+    1135,
+    1137,
+    1138,
+    1139,
+    1140,
+    1141,
+    1142,
+    1143,
+    1144,
+    1150,
+    1152,
+    1153,
+    1155,
+    1156,
+    1157,
+    1159,
+    1161,
+    1162,
+    1163,
+    1220,
+    1221,
+    1222,
+    1223,
+    1224,
+    1225,
+    1226,
+    1238,
+    1239,
+    1241,
+    1242,
+    1243,
+    1244,
+    1245,
+    1246,
+    1248,
+    1249,
+    1250,
+    1321,
+    1322,
+    1323,
+    1324,
+    1325,
+    1326,
+    1329,
+    1331,
+    1333,
+    1338,
+    1339,
+    1622,
+    1624,
+    1625,
+    1626,
+    1627,
+    1628,
+    1629,
+    1630,
+    1631,
+    1632,
+    1633,
+    2001,
+    2002,
+    2003,
+    2004,
+    2005,
+    2006,
+    2007,
+    2008,
+    2009,
+    2010,
+    2011,
+    2012,
+    2013,
+    2014,
+    2015,
+    2016,
+    2017,
+    2018,
+    2019,
+    2020,
+    2021,
+    2022,
+    2023,
+    2024,
+    2025,
+    2026,
+    2027,
+    2028,
+    2029,
+    2030,
+    2031,
+    2032,
+    2033,
+    2034,
+    2035,
+    2036,
+    2037,
+    2038,
+    2039,
+    2040,
+    2041,
+    2042,
+    2043,
+    2044,
+    2045,
+    2046,
+    2047,
+    2048,
+    2049,
+    2050,
+    2051,
+    2052,
+    2053,
+    2054,
+    2055,
+    2056,
+    2057
+  ],
+  "timeslot_min": 0,
+  "timeslot_max": 12545,
+  "timeslot_unique": 12546,
+  "unique_time_intervals": 12546,
+  "negative_counts": {
+    "inFlow": 0,
+    "outFlow": 0,
+    "CinFlow": 0,
+    "HBOinFlow": 0,
+    "NHBinFlow": 0,
+    "CoutFlow": 0,
+    "HBOoutFlow": 0,
+    "NHBoutFlow": 0
+  },
+  "inflow_components_mismatch_count": 0,
+  "outflow_components_mismatch_count": 0,
+  "duplicate_date_timeslot_station": 0,
+  "duplicate_date_startTime_station": 0,
+  "duplicate_full_rows": 0,
+  "per_date": [
+    {
+      "date": 20170501,
+      "rows": 30804,
+      "stations": 302,
+      "timeslots": 102,
+      "min_timeslot": 0,
+      "max_timeslot": 101,
+      "min_startTime": 60000,
+      "max_startTime": 225000
+    },
+    {
+      "date": 20170502,
+      "rows": 30804,
+      "stations": 302,
+      "timeslots": 102,
+      "min_timeslot": 102,
+      "max_timeslot": 203,
+      "min_startTime": 60000,
+      "max_startTime": 225000
+    },
+    {
+      "date": 20170503,
+      "rows": 30804,
+      "stations": 302,
+      "timeslots": 102,
+      "min_timeslot": 204,
+      "max_timeslot": 305,
+      "min_startTime": 60000,
+      "max_startTime": 225000
+    },
+    {
+      "date": 20170504,
+      "rows": 30804,
+      "stations": 302,
+      "timeslots": 102,
+      "min_timeslot": 306,
+      "max_timeslot": 407,
+      "min_startTime": 60000,
+      "max_startTime": 225000
+    },
+    {
+      "date": 20170505,
+      "rows": 30804,
+      "stations": 302,
+      "timeslots": 102,
+      "min_timeslot": 408,
+      "max_timeslot": 509,
+      "min_startTime": 60000,
+      "max_startTime": 225000
+    },
+    {
+      "date": 20170506,
+      "rows": 30804,
+      "stations": 302,
+      "timeslots": 102,
+      "min_timeslot": 510,
+      "max_timeslot": 611,
+      "min_startTime": 60000,
+      "max_startTime": 225000
+    },
+    {
+      "date": 20170507,
+      "rows": 30804,
+      "stations": 302,
+      "timeslots": 102,
+      "min_timeslot": 612,
+      "max_timeslot": 713,
+      "min_startTime": 60000,
+      "max_startTime": 225000
+    },
+    {
+      "date": 20170508,
+      "rows": 30804,
+      "stations": 302,
+      "timeslots": 102,
+      "min_timeslot": 714,
+      "max_timeslot": 815,
+      "min_startTime": 60000,
+      "max_startTime": 225000
+    },
+    {
+      "date": 20170509,
+      "rows": 30804,
+      "stations": 302,
+      "timeslots": 102,
+      "min_timeslot": 816,
+      "max_timeslot": 917,
+      "min_startTime": 60000,
+      "max_startTime": 225000
+    },
+    {
+      "date": 20170510,
+      "rows": 30804,
+      "stations": 302,
+      "timeslots": 102,
+      "min_timeslot": 918,
+      "max_timeslot": 1019,
+      "min_startTime": 60000,
+      "max_startTime": 225000
+    },
+    {
+      "date": 20170511,
+      "rows": 30804,
+      "stations": 302,
+      "timeslots": 102,
+      "min_timeslot": 1020,
+      "max_timeslot": 1121,
+      "min_startTime": 60000,
+      "max_startTime": 225000
+    },
+    {
+      "date": 20170512,
+      "rows": 30804,
+      "stations": 302,
+      "timeslots": 102,
+      "min_timeslot": 1122,
+      "max_timeslot": 1223,
+      "min_startTime": 60000,
+      "max_startTime": 225000
+    },
+    {
+      "date": 20170513,
+      "rows": 30804,
+      "stations": 302,
+      "timeslots": 102,
+      "min_timeslot": 1224,
+      "max_timeslot": 1325,
+      "min_startTime": 60000,
+      "max_startTime": 225000
+    },
+    {
+      "date": 20170514,
+      "rows": 30804,
+      "stations": 302,
+      "timeslots": 102,
+      "min_timeslot": 1326,
+      "max_timeslot": 1427,
+      "min_startTime": 60000,
+      "max_startTime": 225000
+    },
+    {
+      "date": 20170515,
+      "rows": 30804,
+      "stations": 302,
+      "timeslots": 102,
+      "min_timeslot": 1428,
+      "max_timeslot": 1529,
+      "min_startTime": 60000,
+      "max_startTime": 225000
+    },
+    {
+      "date": 20170516,
+      "rows": 30804,
+      "stations": 302,
+      "timeslots": 102,
+      "min_timeslot": 1530,
+      "max_timeslot": 1631,
+      "min_startTime": 60000,
+      "max_startTime": 225000
+    },
+    {
+      "date": 20170517,
+      "rows": 30804,
+      "stations": 302,
+      "timeslots": 102,
+      "min_timeslot": 1632,
+      "max_timeslot": 1733,
+      "min_startTime": 60000,
+      "max_startTime": 225000
+    },
+    {
+      "date": 20170518,
+      "rows": 30804,
+      "stations": 302,
+      "timeslots": 102,
+      "min_timeslot": 1734,
+      "max_timeslot": 1835,
+      "min_startTime": 60000,
+      "max_startTime": 225000
+    },
+    {
+      "date": 20170519,
+      "rows": 30804,
+      "stations": 302,
+      "timeslots": 102,
+      "min_timeslot": 1836,
+      "max_timeslot": 1937,
+      "min_startTime": 60000,
+      "max_startTime": 225000
+    },
+    {
+      "date": 20170520,
+      "rows": 30804,
+      "stations": 302,
+      "timeslots": 102,
+      "min_timeslot": 1938,
+      "max_timeslot": 2039,
+      "min_startTime": 60000,
+      "max_startTime": 225000
+    },
+    {
+      "date": 20170521,
+      "rows": 30804,
+      "stations": 302,
+      "timeslots": 102,
+      "min_timeslot": 2040,
+      "max_timeslot": 2141,
+      "min_startTime": 60000,
+      "max_startTime": 225000
+    },
+    {
+      "date": 20170522,
+      "rows": 30804,
+      "stations": 302,
+      "timeslots": 102,
+      "min_timeslot": 2142,
+      "max_timeslot": 2243,
+      "min_startTime": 60000,
+      "max_startTime": 225000
+    },
+    {
+      "date": 20170523,
+      "rows": 30804,
+      "stations": 302,
+      "timeslots": 102,
+      "min_timeslot": 2244,
+      "max_timeslot": 2345,
+      "min_startTime": 60000,
+      "max_startTime": 225000
+    },
+    {
+      "date": 20170524,
+      "rows": 30804,
+      "stations": 302,
+      "timeslots": 102,
+      "min_timeslot": 2346,
+      "max_timeslot": 2447,
+      "min_startTime": 60000,
+      "max_startTime": 225000
+    },
+    {
+      "date": 20170525,
+      "rows": 30804,
+      "stations": 302,
+      "timeslots": 102,
+      "min_timeslot": 2448,
+      "max_timeslot": 2549,
+      "min_startTime": 60000,
+      "max_startTime": 225000
+    },
+    {
+      "date": 20170526,
+      "rows": 30804,
+      "stations": 302,
+      "timeslots": 102,
+      "min_timeslot": 2550,
+      "max_timeslot": 2651,
+      "min_startTime": 60000,
+      "max_startTime": 225000
+    },
+    {
+      "date": 20170527,
+      "rows": 30804,
+      "stations": 302,
+      "timeslots": 102,
+      "min_timeslot": 2652,
+      "max_timeslot": 2753,
+      "min_startTime": 60000,
+      "max_startTime": 225000
+    },
+    {
+      "date": 20170528,
+      "rows": 30804,
+      "stations": 302,
+      "timeslots": 102,
+      "min_timeslot": 2754,
+      "max_timeslot": 2855,
+      "min_startTime": 60000,
+      "max_startTime": 225000
+    },
+    {
+      "date": 20170529,
+      "rows": 30804,
+      "stations": 302,
+      "timeslots": 102,
+      "min_timeslot": 2856,
+      "max_timeslot": 2957,
+      "min_startTime": 60000,
+      "max_startTime": 225000
+    },
+    {
+      "date": 20170530,
+      "rows": 30804,
+      "stations": 302,
+      "timeslots": 102,
+      "min_timeslot": 2958,
+      "max_timeslot": 3059,
+      "min_startTime": 60000,
+      "max_startTime": 225000
+    },
+    {
+      "date": 20170531,
+      "rows": 30804,
+      "stations": 302,
+      "timeslots": 102,
+      "min_timeslot": 3060,
+      "max_timeslot": 3161,
+      "min_startTime": 60000,
+      "max_startTime": 225000
+    },
+    {
+      "date": 20170601,
+      "rows": 30804,
+      "stations": 302,
+      "timeslots": 102,
+      "min_timeslot": 3162,
+      "max_timeslot": 3263,
+      "min_startTime": 60000,
+      "max_startTime": 225000
+    },
+    {
+      "date": 20170602,
+      "rows": 30804,
+      "stations": 302,
+      "timeslots": 102,
+      "min_timeslot": 3264,
+      "max_timeslot": 3365,
+      "min_startTime": 60000,
+      "max_startTime": 225000
+    },
+    {
+      "date": 20170603,
+      "rows": 30804,
+      "stations": 302,
+      "timeslots": 102,
+      "min_timeslot": 3366,
+      "max_timeslot": 3467,
+      "min_startTime": 60000,
+      "max_startTime": 225000
+    },
+    {
+      "date": 20170604,
+      "rows": 30804,
+      "stations": 302,
+      "timeslots": 102,
+      "min_timeslot": 3468,
+      "max_timeslot": 3569,
+      "min_startTime": 60000,
+      "max_startTime": 225000
+    },
+    {
+      "date": 20170605,
+      "rows": 30804,
+      "stations": 302,
+      "timeslots": 102,
+      "min_timeslot": 3570,
+      "max_timeslot": 3671,
+      "min_startTime": 60000,
+      "max_startTime": 225000
+    },
+    {
+      "date": 20170606,
+      "rows": 30804,
+      "stations": 302,
+      "timeslots": 102,
+      "min_timeslot": 3672,
+      "max_timeslot": 3773,
+      "min_startTime": 60000,
+      "max_startTime": 225000
+    },
+    {
+      "date": 20170607,
+      "rows": 30804,
+      "stations": 302,
+      "timeslots": 102,
+      "min_timeslot": 3774,
+      "max_timeslot": 3875,
+      "min_startTime": 60000,
+      "max_startTime": 225000
+    },
+    {
+      "date": 20170608,
+      "rows": 30804,
+      "stations": 302,
+      "timeslots": 102,
+      "min_timeslot": 3876,
+      "max_timeslot": 3977,
+      "min_startTime": 60000,
+      "max_startTime": 225000
+    },
+    {
+      "date": 20170609,
+      "rows": 30804,
+      "stations": 302,
+      "timeslots": 102,
+      "min_timeslot": 3978,
+      "max_timeslot": 4079,
+      "min_startTime": 60000,
+      "max_startTime": 225000
+    },
+    {
+      "date": 20170610,
+      "rows": 30804,
+      "stations": 302,
+      "timeslots": 102,
+      "min_timeslot": 4080,
+      "max_timeslot": 4181,
+      "min_startTime": 60000,
+      "max_startTime": 225000
+    },
+    {
+      "date": 20170611,
+      "rows": 30804,
+      "stations": 302,
+      "timeslots": 102,
+      "min_timeslot": 4182,
+      "max_timeslot": 4283,
+      "min_startTime": 60000,
+      "max_startTime": 225000
+    },
+    {
+      "date": 20170612,
+      "rows": 30804,
+      "stations": 302,
+      "timeslots": 102,
+      "min_timeslot": 4284,
+      "max_timeslot": 4385,
+      "min_startTime": 60000,
+      "max_startTime": 225000
+    },
+    {
+      "date": 20170613,
+      "rows": 30804,
+      "stations": 302,
+      "timeslots": 102,
+      "min_timeslot": 4386,
+      "max_timeslot": 4487,
+      "min_startTime": 60000,
+      "max_startTime": 225000
+    },
+    {
+      "date": 20170614,
+      "rows": 30804,
+      "stations": 302,
+      "timeslots": 102,
+      "min_timeslot": 4488,
+      "max_timeslot": 4589,
+      "min_startTime": 60000,
+      "max_startTime": 225000
+    },
+    {
+      "date": 20170615,
+      "rows": 30804,
+      "stations": 302,
+      "timeslots": 102,
+      "min_timeslot": 4590,
+      "max_timeslot": 4691,
+      "min_startTime": 60000,
+      "max_startTime": 225000
+    },
+    {
+      "date": 20170616,
+      "rows": 30804,
+      "stations": 302,
+      "timeslots": 102,
+      "min_timeslot": 4692,
+      "max_timeslot": 4793,
+      "min_startTime": 60000,
+      "max_startTime": 225000
+    },
+    {
+      "date": 20170617,
+      "rows": 30804,
+      "stations": 302,
+      "timeslots": 102,
+      "min_timeslot": 4794,
+      "max_timeslot": 4895,
+      "min_startTime": 60000,
+      "max_startTime": 225000
+    },
+    {
+      "date": 20170618,
+      "rows": 30804,
+      "stations": 302,
+      "timeslots": 102,
+      "min_timeslot": 4896,
+      "max_timeslot": 4997,
+      "min_startTime": 60000,
+      "max_startTime": 225000
+    },
+    {
+      "date": 20170619,
+      "rows": 30804,
+      "stations": 302,
+      "timeslots": 102,
+      "min_timeslot": 4998,
+      "max_timeslot": 5099,
+      "min_startTime": 60000,
+      "max_startTime": 225000
+    },
+    {
+      "date": 20170620,
+      "rows": 30804,
+      "stations": 302,
+      "timeslots": 102,
+      "min_timeslot": 5100,
+      "max_timeslot": 5201,
+      "min_startTime": 60000,
+      "max_startTime": 225000
+    },
+    {
+      "date": 20170621,
+      "rows": 30804,
+      "stations": 302,
+      "timeslots": 102,
+      "min_timeslot": 5202,
+      "max_timeslot": 5303,
+      "min_startTime": 60000,
+      "max_startTime": 225000
+    },
+    {
+      "date": 20170622,
+      "rows": 30804,
+      "stations": 302,
+      "timeslots": 102,
+      "min_timeslot": 5304,
+      "max_timeslot": 5405,
+      "min_startTime": 60000,
+      "max_startTime": 225000
+    },
+    {
+      "date": 20170623,
+      "rows": 30804,
+      "stations": 302,
+      "timeslots": 102,
+      "min_timeslot": 5406,
+      "max_timeslot": 5507,
+      "min_startTime": 60000,
+      "max_startTime": 225000
+    },
+    {
+      "date": 20170624,
+      "rows": 30804,
+      "stations": 302,
+      "timeslots": 102,
+      "min_timeslot": 5508,
+      "max_timeslot": 5609,
+      "min_startTime": 60000,
+      "max_startTime": 225000
+    },
+    {
+      "date": 20170625,
+      "rows": 30804,
+      "stations": 302,
+      "timeslots": 102,
+      "min_timeslot": 5610,
+      "max_timeslot": 5711,
+      "min_startTime": 60000,
+      "max_startTime": 225000
+    },
+    {
+      "date": 20170626,
+      "rows": 30804,
+      "stations": 302,
+      "timeslots": 102,
+      "min_timeslot": 5712,
+      "max_timeslot": 5813,
+      "min_startTime": 60000,
+      "max_startTime": 225000
+    },
+    {
+      "date": 20170627,
+      "rows": 30804,
+      "stations": 302,
+      "timeslots": 102,
+      "min_timeslot": 5814,
+      "max_timeslot": 5915,
+      "min_startTime": 60000,
+      "max_startTime": 225000
+    },
+    {
+      "date": 20170628,
+      "rows": 30804,
+      "stations": 302,
+      "timeslots": 102,
+      "min_timeslot": 5916,
+      "max_timeslot": 6017,
+      "min_startTime": 60000,
+      "max_startTime": 225000
+    },
+    {
+      "date": 20170629,
+      "rows": 30804,
+      "stations": 302,
+      "timeslots": 102,
+      "min_timeslot": 6018,
+      "max_timeslot": 6119,
+      "min_startTime": 60000,
+      "max_startTime": 225000
+    },
+    {
+      "date": 20170630,
+      "rows": 30804,
+      "stations": 302,
+      "timeslots": 102,
+      "min_timeslot": 6120,
+      "max_timeslot": 6221,
+      "min_startTime": 60000,
+      "max_startTime": 225000
+    },
+    {
+      "date": 20170701,
+      "rows": 30804,
+      "stations": 302,
+      "timeslots": 102,
+      "min_timeslot": 6222,
+      "max_timeslot": 6323,
+      "min_startTime": 60000,
+      "max_startTime": 225000
+    },
+    {
+      "date": 20170702,
+      "rows": 30804,
+      "stations": 302,
+      "timeslots": 102,
+      "min_timeslot": 6324,
+      "max_timeslot": 6425,
+      "min_startTime": 60000,
+      "max_startTime": 225000
+    },
+    {
+      "date": 20170703,
+      "rows": 30804,
+      "stations": 302,
+      "timeslots": 102,
+      "min_timeslot": 6426,
+      "max_timeslot": 6527,
+      "min_startTime": 60000,
+      "max_startTime": 225000
+    },
+    {
+      "date": 20170704,
+      "rows": 30804,
+      "stations": 302,
+      "timeslots": 102,
+      "min_timeslot": 6528,
+      "max_timeslot": 6629,
+      "min_startTime": 60000,
+      "max_startTime": 225000
+    },
+    {
+      "date": 20170705,
+      "rows": 30804,
+      "stations": 302,
+      "timeslots": 102,
+      "min_timeslot": 6630,
+      "max_timeslot": 6731,
+      "min_startTime": 60000,
+      "max_startTime": 225000
+    },
+    {
+      "date": 20170706,
+      "rows": 30804,
+      "stations": 302,
+      "timeslots": 102,
+      "min_timeslot": 6732,
+      "max_timeslot": 6833,
+      "min_startTime": 60000,
+      "max_startTime": 225000
+    },
+    {
+      "date": 20170707,
+      "rows": 30804,
+      "stations": 302,
+      "timeslots": 102,
+      "min_timeslot": 6834,
+      "max_timeslot": 6935,
+      "min_startTime": 60000,
+      "max_startTime": 225000
+    },
+    {
+      "date": 20170708,
+      "rows": 30804,
+      "stations": 302,
+      "timeslots": 102,
+      "min_timeslot": 6936,
+      "max_timeslot": 7037,
+      "min_startTime": 60000,
+      "max_startTime": 225000
+    },
+    {
+      "date": 20170709,
+      "rows": 30804,
+      "stations": 302,
+      "timeslots": 102,
+      "min_timeslot": 7038,
+      "max_timeslot": 7139,
+      "min_startTime": 60000,
+      "max_startTime": 225000
+    },
+    {
+      "date": 20170710,
+      "rows": 30804,
+      "stations": 302,
+      "timeslots": 102,
+      "min_timeslot": 7140,
+      "max_timeslot": 7241,
+      "min_startTime": 60000,
+      "max_startTime": 225000
+    },
+    {
+      "date": 20170711,
+      "rows": 30804,
+      "stations": 302,
+      "timeslots": 102,
+      "min_timeslot": 7242,
+      "max_timeslot": 7343,
+      "min_startTime": 60000,
+      "max_startTime": 225000
+    },
+    {
+      "date": 20170712,
+      "rows": 30804,
+      "stations": 302,
+      "timeslots": 102,
+      "min_timeslot": 7344,
+      "max_timeslot": 7445,
+      "min_startTime": 60000,
+      "max_startTime": 225000
+    },
+    {
+      "date": 20170713,
+      "rows": 30804,
+      "stations": 302,
+      "timeslots": 102,
+      "min_timeslot": 7446,
+      "max_timeslot": 7547,
+      "min_startTime": 60000,
+      "max_startTime": 225000
+    },
+    {
+      "date": 20170714,
+      "rows": 30804,
+      "stations": 302,
+      "timeslots": 102,
+      "min_timeslot": 7548,
+      "max_timeslot": 7649,
+      "min_startTime": 60000,
+      "max_startTime": 225000
+    },
+    {
+      "date": 20170715,
+      "rows": 30804,
+      "stations": 302,
+      "timeslots": 102,
+      "min_timeslot": 7650,
+      "max_timeslot": 7751,
+      "min_startTime": 60000,
+      "max_startTime": 225000
+    },
+    {
+      "date": 20170716,
+      "rows": 30804,
+      "stations": 302,
+      "timeslots": 102,
+      "min_timeslot": 7752,
+      "max_timeslot": 7853,
+      "min_startTime": 60000,
+      "max_startTime": 225000
+    },
+    {
+      "date": 20170717,
+      "rows": 30804,
+      "stations": 302,
+      "timeslots": 102,
+      "min_timeslot": 7854,
+      "max_timeslot": 7955,
+      "min_startTime": 60000,
+      "max_startTime": 225000
+    },
+    {
+      "date": 20170718,
+      "rows": 30804,
+      "stations": 302,
+      "timeslots": 102,
+      "min_timeslot": 7956,
+      "max_timeslot": 8057,
+      "min_startTime": 60000,
+      "max_startTime": 225000
+    },
+    {
+      "date": 20170719,
+      "rows": 30804,
+      "stations": 302,
+      "timeslots": 102,
+      "min_timeslot": 8058,
+      "max_timeslot": 8159,
+      "min_startTime": 60000,
+      "max_startTime": 225000
+    },
+    {
+      "date": 20170720,
+      "rows": 30804,
+      "stations": 302,
+      "timeslots": 102,
+      "min_timeslot": 8160,
+      "max_timeslot": 8261,
+      "min_startTime": 60000,
+      "max_startTime": 225000
+    },
+    {
+      "date": 20170721,
+      "rows": 30804,
+      "stations": 302,
+      "timeslots": 102,
+      "min_timeslot": 8262,
+      "max_timeslot": 8363,
+      "min_startTime": 60000,
+      "max_startTime": 225000
+    },
+    {
+      "date": 20170722,
+      "rows": 30804,
+      "stations": 302,
+      "timeslots": 102,
+      "min_timeslot": 8364,
+      "max_timeslot": 8465,
+      "min_startTime": 60000,
+      "max_startTime": 225000
+    },
+    {
+      "date": 20170723,
+      "rows": 30804,
+      "stations": 302,
+      "timeslots": 102,
+      "min_timeslot": 8466,
+      "max_timeslot": 8567,
+      "min_startTime": 60000,
+      "max_startTime": 225000
+    },
+    {
+      "date": 20170724,
+      "rows": 30804,
+      "stations": 302,
+      "timeslots": 102,
+      "min_timeslot": 8568,
+      "max_timeslot": 8669,
+      "min_startTime": 60000,
+      "max_startTime": 225000
+    },
+    {
+      "date": 20170725,
+      "rows": 30804,
+      "stations": 302,
+      "timeslots": 102,
+      "min_timeslot": 8670,
+      "max_timeslot": 8771,
+      "min_startTime": 60000,
+      "max_startTime": 225000
+    },
+    {
+      "date": 20170726,
+      "rows": 30804,
+      "stations": 302,
+      "timeslots": 102,
+      "min_timeslot": 8772,
+      "max_timeslot": 8873,
+      "min_startTime": 60000,
+      "max_startTime": 225000
+    },
+    {
+      "date": 20170727,
+      "rows": 30804,
+      "stations": 302,
+      "timeslots": 102,
+      "min_timeslot": 8874,
+      "max_timeslot": 8975,
+      "min_startTime": 60000,
+      "max_startTime": 225000
+    },
+    {
+      "date": 20170728,
+      "rows": 30804,
+      "stations": 302,
+      "timeslots": 102,
+      "min_timeslot": 8976,
+      "max_timeslot": 9077,
+      "min_startTime": 60000,
+      "max_startTime": 225000
+    },
+    {
+      "date": 20170729,
+      "rows": 30804,
+      "stations": 302,
+      "timeslots": 102,
+      "min_timeslot": 9078,
+      "max_timeslot": 9179,
+      "min_startTime": 60000,
+      "max_startTime": 225000
+    },
+    {
+      "date": 20170730,
+      "rows": 30804,
+      "stations": 302,
+      "timeslots": 102,
+      "min_timeslot": 9180,
+      "max_timeslot": 9281,
+      "min_startTime": 60000,
+      "max_startTime": 225000
+    },
+    {
+      "date": 20170731,
+      "rows": 30804,
+      "stations": 302,
+      "timeslots": 102,
+      "min_timeslot": 9282,
+      "max_timeslot": 9383,
+      "min_startTime": 60000,
+      "max_startTime": 225000
+    },
+    {
+      "date": 20170801,
+      "rows": 30804,
+      "stations": 302,
+      "timeslots": 102,
+      "min_timeslot": 9384,
+      "max_timeslot": 9485,
+      "min_startTime": 60000,
+      "max_startTime": 225000
+    },
+    {
+      "date": 20170802,
+      "rows": 30804,
+      "stations": 302,
+      "timeslots": 102,
+      "min_timeslot": 9486,
+      "max_timeslot": 9587,
+      "min_startTime": 60000,
+      "max_startTime": 225000
+    },
+    {
+      "date": 20170803,
+      "rows": 30804,
+      "stations": 302,
+      "timeslots": 102,
+      "min_timeslot": 9588,
+      "max_timeslot": 9689,
+      "min_startTime": 60000,
+      "max_startTime": 225000
+    },
+    {
+      "date": 20170804,
+      "rows": 30804,
+      "stations": 302,
+      "timeslots": 102,
+      "min_timeslot": 9690,
+      "max_timeslot": 9791,
+      "min_startTime": 60000,
+      "max_startTime": 225000
+    },
+    {
+      "date": 20170805,
+      "rows": 30804,
+      "stations": 302,
+      "timeslots": 102,
+      "min_timeslot": 9792,
+      "max_timeslot": 9893,
+      "min_startTime": 60000,
+      "max_startTime": 225000
+    },
+    {
+      "date": 20170806,
+      "rows": 30804,
+      "stations": 302,
+      "timeslots": 102,
+      "min_timeslot": 9894,
+      "max_timeslot": 9995,
+      "min_startTime": 60000,
+      "max_startTime": 225000
+    },
+    {
+      "date": 20170807,
+      "rows": 30804,
+      "stations": 302,
+      "timeslots": 102,
+      "min_timeslot": 9996,
+      "max_timeslot": 10097,
+      "min_startTime": 60000,
+      "max_startTime": 225000
+    },
+    {
+      "date": 20170808,
+      "rows": 30804,
+      "stations": 302,
+      "timeslots": 102,
+      "min_timeslot": 10098,
+      "max_timeslot": 10199,
+      "min_startTime": 60000,
+      "max_startTime": 225000
+    },
+    {
+      "date": 20170809,
+      "rows": 30804,
+      "stations": 302,
+      "timeslots": 102,
+      "min_timeslot": 10200,
+      "max_timeslot": 10301,
+      "min_startTime": 60000,
+      "max_startTime": 225000
+    },
+    {
+      "date": 20170810,
+      "rows": 30804,
+      "stations": 302,
+      "timeslots": 102,
+      "min_timeslot": 10302,
+      "max_timeslot": 10403,
+      "min_startTime": 60000,
+      "max_startTime": 225000
+    },
+    {
+      "date": 20170811,
+      "rows": 30804,
+      "stations": 302,
+      "timeslots": 102,
+      "min_timeslot": 10404,
+      "max_timeslot": 10505,
+      "min_startTime": 60000,
+      "max_startTime": 225000
+    },
+    {
+      "date": 20170812,
+      "rows": 30804,
+      "stations": 302,
+      "timeslots": 102,
+      "min_timeslot": 10506,
+      "max_timeslot": 10607,
+      "min_startTime": 60000,
+      "max_startTime": 225000
+    },
+    {
+      "date": 20170813,
+      "rows": 30804,
+      "stations": 302,
+      "timeslots": 102,
+      "min_timeslot": 10608,
+      "max_timeslot": 10709,
+      "min_startTime": 60000,
+      "max_startTime": 225000
+    },
+    {
+      "date": 20170814,
+      "rows": 30804,
+      "stations": 302,
+      "timeslots": 102,
+      "min_timeslot": 10710,
+      "max_timeslot": 10811,
+      "min_startTime": 60000,
+      "max_startTime": 225000
+    },
+    {
+      "date": 20170815,
+      "rows": 30804,
+      "stations": 302,
+      "timeslots": 102,
+      "min_timeslot": 10812,
+      "max_timeslot": 10913,
+      "min_startTime": 60000,
+      "max_startTime": 225000
+    },
+    {
+      "date": 20170816,
+      "rows": 30804,
+      "stations": 302,
+      "timeslots": 102,
+      "min_timeslot": 10914,
+      "max_timeslot": 11015,
+      "min_startTime": 60000,
+      "max_startTime": 225000
+    },
+    {
+      "date": 20170817,
+      "rows": 30804,
+      "stations": 302,
+      "timeslots": 102,
+      "min_timeslot": 11016,
+      "max_timeslot": 11117,
+      "min_startTime": 60000,
+      "max_startTime": 225000
+    },
+    {
+      "date": 20170818,
+      "rows": 30804,
+      "stations": 302,
+      "timeslots": 102,
+      "min_timeslot": 11118,
+      "max_timeslot": 11219,
+      "min_startTime": 60000,
+      "max_startTime": 225000
+    },
+    {
+      "date": 20170819,
+      "rows": 30804,
+      "stations": 302,
+      "timeslots": 102,
+      "min_timeslot": 11220,
+      "max_timeslot": 11321,
+      "min_startTime": 60000,
+      "max_startTime": 225000
+    },
+    {
+      "date": 20170820,
+      "rows": 30804,
+      "stations": 302,
+      "timeslots": 102,
+      "min_timeslot": 11322,
+      "max_timeslot": 11423,
+      "min_startTime": 60000,
+      "max_startTime": 225000
+    },
+    {
+      "date": 20170821,
+      "rows": 30804,
+      "stations": 302,
+      "timeslots": 102,
+      "min_timeslot": 11424,
+      "max_timeslot": 11525,
+      "min_startTime": 60000,
+      "max_startTime": 225000
+    },
+    {
+      "date": 20170822,
+      "rows": 30804,
+      "stations": 302,
+      "timeslots": 102,
+      "min_timeslot": 11526,
+      "max_timeslot": 11627,
+      "min_startTime": 60000,
+      "max_startTime": 225000
+    },
+    {
+      "date": 20170823,
+      "rows": 30804,
+      "stations": 302,
+      "timeslots": 102,
+      "min_timeslot": 11628,
+      "max_timeslot": 11729,
+      "min_startTime": 60000,
+      "max_startTime": 225000
+    },
+    {
+      "date": 20170824,
+      "rows": 30804,
+      "stations": 302,
+      "timeslots": 102,
+      "min_timeslot": 11730,
+      "max_timeslot": 11831,
+      "min_startTime": 60000,
+      "max_startTime": 225000
+    },
+    {
+      "date": 20170825,
+      "rows": 30804,
+      "stations": 302,
+      "timeslots": 102,
+      "min_timeslot": 11832,
+      "max_timeslot": 11933,
+      "min_startTime": 60000,
+      "max_startTime": 225000
+    },
+    {
+      "date": 20170826,
+      "rows": 30804,
+      "stations": 302,
+      "timeslots": 102,
+      "min_timeslot": 11934,
+      "max_timeslot": 12035,
+      "min_startTime": 60000,
+      "max_startTime": 225000
+    },
+    {
+      "date": 20170827,
+      "rows": 30804,
+      "stations": 302,
+      "timeslots": 102,
+      "min_timeslot": 12036,
+      "max_timeslot": 12137,
+      "min_startTime": 60000,
+      "max_startTime": 225000
+    },
+    {
+      "date": 20170828,
+      "rows": 30804,
+      "stations": 302,
+      "timeslots": 102,
+      "min_timeslot": 12138,
+      "max_timeslot": 12239,
+      "min_startTime": 60000,
+      "max_startTime": 225000
+    },
+    {
+      "date": 20170829,
+      "rows": 30804,
+      "stations": 302,
+      "timeslots": 102,
+      "min_timeslot": 12240,
+      "max_timeslot": 12341,
+      "min_startTime": 60000,
+      "max_startTime": 225000
+    },
+    {
+      "date": 20170830,
+      "rows": 30804,
+      "stations": 302,
+      "timeslots": 102,
+      "min_timeslot": 12342,
+      "max_timeslot": 12443,
+      "min_startTime": 60000,
+      "max_startTime": 225000
+    },
+    {
+      "date": 20170831,
+      "rows": 30804,
+      "stations": 302,
+      "timeslots": 102,
+      "min_timeslot": 12444,
+      "max_timeslot": 12545,
+      "min_startTime": 60000,
+      "max_startTime": 225000
+    }
+  ],
+  "time_interval_first_5": [
+    {
+      "date": 20170501,
+      "timeslot": 0,
+      "startTime": 60000,
+      "endTime": 61000
+    },
+    {
+      "date": 20170501,
+      "timeslot": 1,
+      "startTime": 61000,
+      "endTime": 62000
+    },
+    {
+      "date": 20170501,
+      "timeslot": 2,
+      "startTime": 62000,
+      "endTime": 63000
+    },
+    {
+      "date": 20170501,
+      "timeslot": 3,
+      "startTime": 63000,
+      "endTime": 64000
+    },
+    {
+      "date": 20170501,
+      "timeslot": 4,
+      "startTime": 64000,
+      "endTime": 65000
+    }
+  ],
+  "time_interval_last_5": [
+    {
+      "date": 20170831,
+      "timeslot": 12541,
+      "startTime": 221000,
+      "endTime": 222000
+    },
+    {
+      "date": 20170831,
+      "timeslot": 12542,
+      "startTime": 222000,
+      "endTime": 223000
+    },
+    {
+      "date": 20170831,
+      "timeslot": 12543,
+      "startTime": 223000,
+      "endTime": 224000
+    },
+    {
+      "date": 20170831,
+      "timeslot": 12544,
+      "startTime": 224000,
+      "endTime": 225000
+    },
+    {
+      "date": 20170831,
+      "timeslot": 12545,
+      "startTime": 225000,
+      "endTime": 230000
+    }
+  ],
+  "sample_first_3": [
+    {
+      "date": 20170501,
+      "timeslot": 0,
+      "startTime": 60000,
+      "endTime": 61000,
+      "station": 112,
+      "inFlow": 29,
+      "outFlow": 32,
+      "CinFlow": 9,
+      "HBOinFlow": 15,
+      "NHBinFlow": 5,
+      "CoutFlow": 11,
+      "HBOoutFlow": 13,
+      "NHBoutFlow": 8
+    },
+    {
+      "date": 20170501,
+      "timeslot": 0,
+      "startTime": 60000,
+      "endTime": 61000,
+      "station": 113,
+      "inFlow": 142,
+      "outFlow": 102,
+      "CinFlow": 40,
+      "HBOinFlow": 51,
+      "NHBinFlow": 51,
+      "CoutFlow": 30,
+      "HBOoutFlow": 41,
+      "NHBoutFlow": 31
+    },
+    {
+      "date": 20170501,
+      "timeslot": 0,
+      "startTime": 60000,
+      "endTime": 61000,
+      "station": 114,
+      "inFlow": 66,
+      "outFlow": 35,
+      "CinFlow": 17,
+      "HBOinFlow": 19,
+      "NHBinFlow": 30,
+      "CoutFlow": 12,
+      "HBOoutFlow": 10,
+      "NHBoutFlow": 13
+    }
+  ],
+  "date_boundary_first_4": [
+    {
+      "last": {
+        "date": 20170501,
+        "timeslot": 101,
+        "startTime": 225000,
+        "endTime": 230000
+      },
+      "next_first": {
+        "date": 20170502,
+        "timeslot": 102,
+        "startTime": 60000,
+        "endTime": 61000
+      }
+    },
+    {
+      "last": {
+        "date": 20170502,
+        "timeslot": 203,
+        "startTime": 225000,
+        "endTime": 230000
+      },
+      "next_first": {
+        "date": 20170503,
+        "timeslot": 204,
+        "startTime": 60000,
+        "endTime": 61000
+      }
+    },
+    {
+      "last": {
+        "date": 20170503,
+        "timeslot": 305,
+        "startTime": 225000,
+        "endTime": 230000
+      },
+      "next_first": {
+        "date": 20170504,
+        "timeslot": 306,
+        "startTime": 60000,
+        "endTime": 61000
+      }
+    },
+    {
+      "last": {
+        "date": 20170504,
+        "timeslot": 407,
+        "startTime": 225000,
+        "endTime": 230000
+      },
+      "next_first": {
+        "date": 20170505,
+        "timeslot": 408,
+        "startTime": 60000,
+        "endTime": 61000
+      }
+    }
+  ],
+  "elapsed_seconds": 18.69,
+  "daily_flow_totals": [
+    {
+      "date": 20170501,
+      "inFlow": 4508754,
+      "outFlow": 4508754
+    },
+    {
+      "date": 20170502,
+      "inFlow": 6771110,
+      "outFlow": 6771110
+    },
+    {
+      "date": 20170503,
+      "inFlow": 6977232,
+      "outFlow": 6977232
+    },
+    {
+      "date": 20170504,
+      "inFlow": 11132,
+      "outFlow": 11132
+    },
+    {
+      "date": 20170505,
+      "inFlow": 7499496,
+      "outFlow": 7499496
+    },
+    {
+      "date": 20170506,
+      "inFlow": 5104167,
+      "outFlow": 5104167
+    },
+    {
+      "date": 20170507,
+      "inFlow": 4563568,
+      "outFlow": 4563568
+    },
+    {
+      "date": 20170508,
+      "inFlow": 3470,
+      "outFlow": 3470
+    },
+    {
+      "date": 20170509,
+      "inFlow": 7453,
+      "outFlow": 7453
+    },
+    {
+      "date": 20170510,
+      "inFlow": 7195947,
+      "outFlow": 7195947
+    },
+    {
+      "date": 20170511,
+      "inFlow": 7070950,
+      "outFlow": 7070950
+    },
+    {
+      "date": 20170512,
+      "inFlow": 7206005,
+      "outFlow": 7206005
+    },
+    {
+      "date": 20170513,
+      "inFlow": 5279967,
+      "outFlow": 5279967
+    },
+    {
+      "date": 20170514,
+      "inFlow": 4738129,
+      "outFlow": 4738129
+    },
+    {
+      "date": 20170515,
+      "inFlow": 7123249,
+      "outFlow": 7123249
+    },
+    {
+      "date": 20170516,
+      "inFlow": 7150592,
+      "outFlow": 7150592
+    },
+    {
+      "date": 20170517,
+      "inFlow": 7190676,
+      "outFlow": 7190676
+    },
+    {
+      "date": 20170518,
+      "inFlow": 7184823,
+      "outFlow": 7184823
+    },
+    {
+      "date": 20170519,
+      "inFlow": 7691783,
+      "outFlow": 7691783
+    },
+    {
+      "date": 20170520,
+      "inFlow": 5468895,
+      "outFlow": 5468895
+    },
+    {
+      "date": 20170521,
+      "inFlow": 4749176,
+      "outFlow": 4749176
+    },
+    {
+      "date": 20170522,
+      "inFlow": 7099685,
+      "outFlow": 7099685
+    },
+    {
+      "date": 20170523,
+      "inFlow": 6868204,
+      "outFlow": 6868204
+    },
+    {
+      "date": 20170524,
+      "inFlow": 7067335,
+      "outFlow": 7067335
+    },
+    {
+      "date": 20170525,
+      "inFlow": 7190177,
+      "outFlow": 7190177
+    },
+    {
+      "date": 20170526,
+      "inFlow": 7295876,
+      "outFlow": 7295876
+    },
+    {
+      "date": 20170527,
+      "inFlow": 7097392,
+      "outFlow": 7097392
+    },
+    {
+      "date": 20170528,
+      "inFlow": 4720399,
+      "outFlow": 4720399
+    },
+    {
+      "date": 20170529,
+      "inFlow": 4513323,
+      "outFlow": 4513323
+    },
+    {
+      "date": 20170530,
+      "inFlow": 4136577,
+      "outFlow": 4136577
+    },
+    {
+      "date": 20170531,
+      "inFlow": 6821687,
+      "outFlow": 6821687
+    },
+    {
+      "date": 20170601,
+      "inFlow": 6770863,
+      "outFlow": 6770863
+    },
+    {
+      "date": 20170602,
+      "inFlow": 7189754,
+      "outFlow": 7189754
+    },
+    {
+      "date": 20170603,
+      "inFlow": 4831659,
+      "outFlow": 4831659
+    },
+    {
+      "date": 20170604,
+      "inFlow": 4253382,
+      "outFlow": 4253382
+    },
+    {
+      "date": 20170605,
+      "inFlow": 6751298,
+      "outFlow": 6751298
+    },
+    {
+      "date": 20170606,
+      "inFlow": 6854527,
+      "outFlow": 6854527
+    },
+    {
+      "date": 20170607,
+      "inFlow": 7071617,
+      "outFlow": 7071617
+    },
+    {
+      "date": 20170608,
+      "inFlow": 6994997,
+      "outFlow": 6994997
+    },
+    {
+      "date": 20170609,
+      "inFlow": 7441327,
+      "outFlow": 7441327
+    },
+    {
+      "date": 20170610,
+      "inFlow": 3885367,
+      "outFlow": 3885367
+    },
+    {
+      "date": 20170611,
+      "inFlow": 4522858,
+      "outFlow": 4522858
+    },
+    {
+      "date": 20170612,
+      "inFlow": 6867708,
+      "outFlow": 6867708
+    },
+    {
+      "date": 20170613,
+      "inFlow": 6771512,
+      "outFlow": 6771512
+    },
+    {
+      "date": 20170614,
+      "inFlow": 7124486,
+      "outFlow": 7124486
+    },
+    {
+      "date": 20170615,
+      "inFlow": 7113452,
+      "outFlow": 7113452
+    },
+    {
+      "date": 20170616,
+      "inFlow": 24940,
+      "outFlow": 24940
+    },
+    {
+      "date": 20170617,
+      "inFlow": 5153976,
+      "outFlow": 5153976
+    },
+    {
+      "date": 20170618,
+      "inFlow": 4611218,
+      "outFlow": 4611218
+    },
+    {
+      "date": 20170619,
+      "inFlow": 6971115,
+      "outFlow": 6971115
+    },
+    {
+      "date": 20170620,
+      "inFlow": 7040846,
+      "outFlow": 7040846
+    },
+    {
+      "date": 20170621,
+      "inFlow": 7051696,
+      "outFlow": 7051696
+    },
+    {
+      "date": 20170622,
+      "inFlow": 7094334,
+      "outFlow": 7094334
+    },
+    {
+      "date": 20170623,
+      "inFlow": 7341033,
+      "outFlow": 7341033
+    },
+    {
+      "date": 20170624,
+      "inFlow": 4447311,
+      "outFlow": 4447311
+    },
+    {
+      "date": 20170625,
+      "inFlow": 4134313,
+      "outFlow": 4134313
+    },
+    {
+      "date": 20170626,
+      "inFlow": 7049133,
+      "outFlow": 7049133
+    },
+    {
+      "date": 20170627,
+      "inFlow": 964,
+      "outFlow": 964
+    },
+    {
+      "date": 20170628,
+      "inFlow": 6840,
+      "outFlow": 6840
+    },
+    {
+      "date": 20170629,
+      "inFlow": 7103003,
+      "outFlow": 7103003
+    },
+    {
+      "date": 20170630,
+      "inFlow": 7523842,
+      "outFlow": 7523842
+    },
+    {
+      "date": 20170701,
+      "inFlow": 4943220,
+      "outFlow": 4943220
+    },
+    {
+      "date": 20170702,
+      "inFlow": 4409680,
+      "outFlow": 4409680
+    },
+    {
+      "date": 20170703,
+      "inFlow": 7060883,
+      "outFlow": 7060883
+    },
+    {
+      "date": 20170704,
+      "inFlow": 7012530,
+      "outFlow": 7012530
+    },
+    {
+      "date": 20170705,
+      "inFlow": 7046376,
+      "outFlow": 7046376
+    },
+    {
+      "date": 20170706,
+      "inFlow": 7039581,
+      "outFlow": 7039581
+    },
+    {
+      "date": 20170707,
+      "inFlow": 7314461,
+      "outFlow": 7314461
+    },
+    {
+      "date": 20170708,
+      "inFlow": 4786461,
+      "outFlow": 4786461
+    },
+    {
+      "date": 20170709,
+      "inFlow": 4212572,
+      "outFlow": 4212572
+    },
+    {
+      "date": 20170710,
+      "inFlow": 7069494,
+      "outFlow": 7069494
+    },
+    {
+      "date": 20170711,
+      "inFlow": 7008724,
+      "outFlow": 7008724
+    },
+    {
+      "date": 20170712,
+      "inFlow": 6952626,
+      "outFlow": 6952626
+    },
+    {
+      "date": 20170713,
+      "inFlow": 6846503,
+      "outFlow": 6846503
+    },
+    {
+      "date": 20170714,
+      "inFlow": 7065231,
+      "outFlow": 7065231
+    },
+    {
+      "date": 20170715,
+      "inFlow": 4593970,
+      "outFlow": 4593970
+    },
+    {
+      "date": 20170716,
+      "inFlow": 4018404,
+      "outFlow": 4018404
+    },
+    {
+      "date": 20170717,
+      "inFlow": 6896749,
+      "outFlow": 6896749
+    },
+    {
+      "date": 20170718,
+      "inFlow": 6837790,
+      "outFlow": 6837790
+    },
+    {
+      "date": 20170719,
+      "inFlow": 6882947,
+      "outFlow": 6882947
+    },
+    {
+      "date": 20170720,
+      "inFlow": 6778158,
+      "outFlow": 6778158
+    },
+    {
+      "date": 20170721,
+      "inFlow": 6923068,
+      "outFlow": 6923068
+    },
+    {
+      "date": 20170722,
+      "inFlow": 4147525,
+      "outFlow": 4147525
+    },
+    {
+      "date": 20170723,
+      "inFlow": 3638016,
+      "outFlow": 3638016
+    },
+    {
+      "date": 20170724,
+      "inFlow": 6616078,
+      "outFlow": 6616078
+    },
+    {
+      "date": 20170725,
+      "inFlow": 6552527,
+      "outFlow": 6552527
+    },
+    {
+      "date": 20170726,
+      "inFlow": 6631744,
+      "outFlow": 6631744
+    },
+    {
+      "date": 20170727,
+      "inFlow": 6691225,
+      "outFlow": 6691225
+    },
+    {
+      "date": 20170728,
+      "inFlow": 7071846,
+      "outFlow": 7071846
+    },
+    {
+      "date": 20170729,
+      "inFlow": 4551848,
+      "outFlow": 4551848
+    },
+    {
+      "date": 20170730,
+      "inFlow": 3969443,
+      "outFlow": 3969443
+    },
+    {
+      "date": 20170731,
+      "inFlow": 6824549,
+      "outFlow": 6824549
+    },
+    {
+      "date": 20170801,
+      "inFlow": 6803581,
+      "outFlow": 6803581
+    },
+    {
+      "date": 20170802,
+      "inFlow": 6838649,
+      "outFlow": 6838649
+    },
+    {
+      "date": 20170803,
+      "inFlow": 6783478,
+      "outFlow": 6783478
+    },
+    {
+      "date": 20170804,
+      "inFlow": 6916200,
+      "outFlow": 6916200
+    },
+    {
+      "date": 20170805,
+      "inFlow": 4292173,
+      "outFlow": 4292173
+    },
+    {
+      "date": 20170806,
+      "inFlow": 4059727,
+      "outFlow": 4059727
+    },
+    {
+      "date": 20170807,
+      "inFlow": 6773114,
+      "outFlow": 6773114
+    },
+    {
+      "date": 20170808,
+      "inFlow": 6748395,
+      "outFlow": 6748395
+    },
+    {
+      "date": 20170809,
+      "inFlow": 6714122,
+      "outFlow": 6714122
+    },
+    {
+      "date": 20170810,
+      "inFlow": 6889847,
+      "outFlow": 6889847
+    },
+    {
+      "date": 20170811,
+      "inFlow": 7101922,
+      "outFlow": 7101922
+    },
+    {
+      "date": 20170812,
+      "inFlow": 4695972,
+      "outFlow": 4695972
+    },
+    {
+      "date": 20170813,
+      "inFlow": 4162328,
+      "outFlow": 4162328
+    },
+    {
+      "date": 20170814,
+      "inFlow": 6867107,
+      "outFlow": 6867107
+    },
+    {
+      "date": 20170815,
+      "inFlow": 6906344,
+      "outFlow": 6906344
+    },
+    {
+      "date": 20170816,
+      "inFlow": 6967053,
+      "outFlow": 6967053
+    },
+    {
+      "date": 20170817,
+      "inFlow": 6925050,
+      "outFlow": 6925050
+    },
+    {
+      "date": 20170818,
+      "inFlow": 7204497,
+      "outFlow": 7204497
+    },
+    {
+      "date": 20170819,
+      "inFlow": 4813076,
+      "outFlow": 4813076
+    },
+    {
+      "date": 20170820,
+      "inFlow": 4140824,
+      "outFlow": 4140824
+    },
+    {
+      "date": 20170821,
+      "inFlow": 6913955,
+      "outFlow": 6913955
+    },
+    {
+      "date": 20170822,
+      "inFlow": 7013910,
+      "outFlow": 7013910
+    },
+    {
+      "date": 20170823,
+      "inFlow": 6901810,
+      "outFlow": 6901810
+    },
+    {
+      "date": 20170824,
+      "inFlow": 6828865,
+      "outFlow": 6828865
+    },
+    {
+      "date": 20170825,
+      "inFlow": 7000698,
+      "outFlow": 7000698
+    },
+    {
+      "date": 20170826,
+      "inFlow": 4928178,
+      "outFlow": 4928178
+    },
+    {
+      "date": 20170827,
+      "inFlow": 4386773,
+      "outFlow": 4386773
+    },
+    {
+      "date": 20170828,
+      "inFlow": 7138487,
+      "outFlow": 7138487
+    },
+    {
+      "date": 20170829,
+      "inFlow": 6722829,
+      "outFlow": 6722829
+    },
+    {
+      "date": 20170830,
+      "inFlow": 6879513,
+      "outFlow": 6879513
+    },
+    {
+      "date": 20170831,
+      "inFlow": 6849303,
+      "outFlow": 6849303
+    }
+  ],
+  "all_zero_flow_dates": [],
+  "zero_station_date_count": 63,
+  "zero_flow_row_count": 153301,
+  "weather_default_units_source": "https://raw.githubusercontent.com/open-meteo/open-meteo/main/openapi/historical-weather.yml",
+  "weather_api_default_units": {
+    "temperature_unit": "celsius",
+    "wind_speed_unit": "kmh",
+    "precipitation_unit": "mm"
+  },
+  "calendar_complete_but_quality_not_complete": true,
+  "six_smallest_daily_inflow": [
+    {
+      "date": 20170627,
+      "inFlow": 964,
+      "outFlow": 964
+    },
+    {
+      "date": 20170508,
+      "inFlow": 3470,
+      "outFlow": 3470
+    },
+    {
+      "date": 20170628,
+      "inFlow": 6840,
+      "outFlow": 6840
+    },
+    {
+      "date": 20170509,
+      "inFlow": 7453,
+      "outFlow": 7453
+    },
+    {
+      "date": 20170504,
+      "inFlow": 11132,
+      "outFlow": 11132
+    },
+    {
+      "date": 20170616,
+      "inFlow": 24940,
+      "outFlow": 24940
+    }
+  ],
+  "daily_grid_check": {
+    "all_dates_302_stations": true,
+    "all_dates_102_timeslots": true,
+    "all_dates_30804_rows": true
+  }
+}
