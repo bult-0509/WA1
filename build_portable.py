@@ -22,7 +22,7 @@ def build():
     core=['app.py','prepare_data.py','build_portable.py','launch.py','README.md','requirements.txt']
     with zipfile.ZipFile(source,'w',zipfile.ZIP_DEFLATED,compresslevel=9) as z:
         for name in core:z.write(ROOT/name,name)
-        for folder in ['src','assets','tests','.streamlit']:
+        for folder in ['src','assets','static','tests','.streamlit']:
             add_tree(z,ROOT/folder,folder,('__pycache__',))
         add_tree(z,ROOT/'data/processed','data/processed')
         for name in ['数据来源与准备.md','测试与验收记录.md']:

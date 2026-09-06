@@ -29,4 +29,10 @@ class AppPages(unittest.TestCase):
         app.date_input(key='dates').set_value((date(2017,5,4),date(2017,5,4))).run()
         self.assertFalse(list(app.exception));self.assertGreater(len(app.warning),0)
 
+    def test_overview_shortcut(self):
+        app=AppTest.from_file(str(APP),default_timeout=60).run()
+        app.button(key='quick_station').click().run()
+        self.assertFalse(list(app.exception))
+        self.assertEqual(app.session_state['page'],'站点空间')
+
 if __name__=='__main__':unittest.main()

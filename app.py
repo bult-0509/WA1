@@ -14,27 +14,47 @@ ROOT = Path(__file__).resolve().parent
 DATA = ROOT / 'data/processed'
 st.set_page_config(page_title='沪上流动 · 地铁客流分析', page_icon='assets/favicon.svg', layout='wide', initial_sidebar_state='expanded')
 st.html('''<style>
-html,body,[class*="css"],.stApp{font-family:"Microsoft YaHei","Segoe UI",sans-serif;}
-.block-container{padding-top:2.2rem;padding-bottom:3rem;max-width:1500px;}
+@font-face{
+  font-family:"Alimama FangYuanTi VF";
+  src:url("app/static/fonts/AlimamaFangYuanTiVF-Thin.woff2") format("woff2");
+  font-style:normal;font-weight:100 900;font-display:swap;
+}
+html,body,[class*="css"],.stApp,.stApp p,.stApp label,.stApp h1,.stApp h2,.stApp h3,
+.stApp button,.stApp input,.stApp textarea{font-family:"Alimama FangYuanTi VF","Microsoft YaHei","Segoe UI",sans-serif;}
+.block-container{padding-top:4.25rem;padding-bottom:2.5rem;max-width:1500px;}
 [data-testid="stAppDeployButton"]{display:none;}
-[data-testid="stSidebar"]{background:#102B3B;color:#EDF6F7;}
+[data-testid="stSidebar"]{background:#102B3B;color:#EDF6F7;border-right:1px solid #183D4D;}
 [data-testid="stSidebar"] p,[data-testid="stSidebar"] label,[data-testid="stSidebar"] h3{color:#EDF6F7;}
 [data-testid="stSidebar"] [data-baseweb="select"] div{color:#203748;}
 [data-testid="stSidebar"] [data-testid="stCaptionContainer"] p{color:#BDCDD4;}
-[data-testid="stMetric"]{background:white;border:1px solid #E4EBEF;border-radius:12px;padding:18px 22px;}
+[data-testid="stSidebar"] [role="radiogroup"]{gap:5px;}
+[data-testid="stSidebar"] [role="radiogroup"] label{padding:7px 8px;border-radius:8px;}
+[data-testid="stSidebar"] [role="radiogroup"] label:has(input:checked){background:rgba(105,177,178,.13);}
+[data-testid="stMetric"]{background:white;border:1px solid #E1E9ED;border-radius:12px;padding:16px 20px;box-shadow:0 7px 24px rgba(19,52,66,.045);}
 [data-testid="stMetricValue"]{font-weight:650;color:#153C4B;font-size:clamp(18px,2.4vw,32px);}
-[data-testid="stPlotlyChart"]{border:1px solid #E4EBEF;border-radius:12px;overflow:hidden;}
-.eyebrow{color:#498C8F;letter-spacing:2px;font-size:12px;font-weight:650;margin:0 0 10px;}
-.hero{background:linear-gradient(110deg,#123442,#17545A);color:white;border-radius:16px;padding:29px 34px;margin-bottom:24px;}
-.hero h1{font-size:31px;line-height:1.35;letter-spacing:1px;color:white;margin:0 0 10px;padding:0;}
-.hero p{color:#C7DCDF;font-size:14px;margin:0;max-width:900px;line-height:1.8;}
-.hero .eyebrow{color:#92C9C7;}
-.insight{background:#E9F3F1;border-left:3px solid #448B85;border-radius:0 8px 8px 0;padding:15px 18px;margin:14px 0;color:#204D4E;line-height:1.8;}
+[data-testid="stPlotlyChart"]{border:1px solid #E1E9ED;border-radius:12px;overflow:hidden;box-shadow:0 7px 24px rgba(19,52,66,.035);}
+.page-head{position:relative;background:#123442;color:white;border-radius:15px;padding:22px 26px 19px;margin-bottom:10px;overflow:hidden;}
+.page-head:after{content:"";position:absolute;right:-42px;top:-75px;width:210px;height:210px;border-radius:50%;border:44px solid rgba(120,194,188,.10);}
+.head-row{display:flex;align-items:flex-start;justify-content:space-between;gap:24px;position:relative;z-index:1;}
+.head-main{display:flex;gap:16px;align-items:flex-start;min-width:0;}
+.page-index{width:38px;height:38px;flex:0 0 38px;border-radius:10px;background:#E88951;color:#102B3B;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:760;}
+.page-head h1{font-size:26px;line-height:1.25;letter-spacing:.4px;color:white;margin:0 0 5px;padding:0;}
+.page-head p{color:#C7DCDF;font-size:13px;margin:0;line-height:1.65;max-width:780px;}
+.head-meta{display:flex;gap:7px;flex-wrap:wrap;justify-content:flex-end;max-width:340px;}
+.head-meta span{border:1px solid rgba(199,220,223,.24);background:rgba(255,255,255,.06);border-radius:999px;padding:5px 9px;color:#D8E8EA;font-size:11px;white-space:nowrap;}
+.context-line{display:flex;gap:10px;align-items:center;background:#EEF4F4;border:1px solid #DDE9E8;border-radius:9px;padding:9px 13px;margin:0 0 17px;color:#34565D;font-size:12px;line-height:1.55;}
+.context-line b{color:#176B70;white-space:nowrap;}
+.insight{background:#E9F3F1;border-left:3px solid #448B85;border-radius:0 8px 8px 0;padding:13px 16px;margin:12px 0;color:#204D4E;line-height:1.7;}
 .side-brand{padding:8px 0 20px;border-bottom:1px solid #34505F;margin-bottom:16px;}
 .side-brand b{font-size:25px;letter-spacing:2px;color:white;}
 .side-brand p{font-size:11px;letter-spacing:2px;opacity:.8;}
-h2,h3{letter-spacing:.2px;} button:focus-visible{outline:3px solid #64A8AF!important;}
-@media(max-width:700px){.block-container{padding:1rem;}.hero{padding:20px;}.hero h1{font-size:24px;}}
+.side-section{font-size:12px;font-weight:700;letter-spacing:1.4px;color:#83B7B8;margin:2px 0 5px;}
+h2,h3{letter-spacing:.2px;} button:focus-visible{outline:3px solid #64A8AF!important;outline-offset:2px;}
+[class*="st-key-quick_"] button{min-height:54px;border:1px solid #DCE7EA;background:#FFFFFF;color:#183D4D;border-radius:11px;font-weight:680;box-shadow:0 6px 18px rgba(19,52,66,.035);}
+[class*="st-key-quick_"] button:hover{border-color:#448B85;color:#176B70;background:#F2F8F7;}
+[class*="st-key-quick_"] [data-testid="stCaptionContainer"] p{text-align:center;color:#617780;font-size:11px;margin-top:-4px;}
+@media(max-width:900px){.head-meta{display:none;}.page-head{padding:20px;}.head-row{gap:12px;}}
+@media(max-width:700px){.block-container{padding:4rem .8rem 1.5rem;}.page-head h1{font-size:22px;}.page-index{width:34px;height:34px;flex-basis:34px}.context-line{align-items:flex-start;}.stApp p,.stApp label{font-size:16px;}}
 @media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important;}}
 </style>''')
 
@@ -57,7 +77,7 @@ def show_plot(fig, key):
     fig.update_layout(title_text=f'{fig.layout.title.text}<br><sup>{detail}</sup>', margin_t=95)
     config = dict(c.CONFIG)
     config['toImageButtonOptions'] = {'format': 'png', 'filename': f'{key}_{dates[0]}_{dates[1]}', 'scale': 2}
-    st.plotly_chart(fig, use_container_width=True, config=config, key=key)
+    st.plotly_chart(fig, width='stretch', config=config, key=key)
 
 
 def table_export(table, key, label='查看数据并导出 CSV'):
@@ -66,7 +86,7 @@ def table_export(table, key, label='查看数据并导出 CSV'):
             'hour': '小时', 'value': '人次', 'days': '有效天数', 'inFlow': '进站人次', 'outFlow': '出站人次',
             'is_workday': '工作日标记', 'cluster': '分组', 'groups': '分组数', 'silhouette': '轮廓系数',
             'proportion': '占比', 'temperature_2m': '日均温度_摄氏度', 'rain': '日雨量_mm'})
-        st.dataframe(renamed, hide_index=True, use_container_width=True)
+        st.dataframe(renamed, hide_index=True, width='stretch')
         export = renamed.copy()
         export['筛选范围'] = context
         export['站点范围'] = ','.join(map(str, selected)) if selected and not fixed_network and not cluster_view else '全部站点'
@@ -84,11 +104,14 @@ except (OSError, ValueError, KeyError) as error:
 
 stations = tables['stations']
 names = dict(zip(stations.station_id, stations.name))
+pages = ['项目概览', '时间规律', '站点空间', '出行模式', '天气关联', '数据质量与说明']
+page_numbers = {name: f'{i:02d}' for i, name in enumerate(pages, start=1)}
 with st.sidebar:
     st.html('<div class="side-brand"><b>沪上流动</b><p>METROFLOW · SHANGHAI</p></div>')
-    page = st.radio('分析导航', ['项目概览', '时间规律', '站点空间', '出行模式', '天气关联', '数据质量与说明'], key='page')
+    st.html('<div class="side-section">功能</div>')
+    page = st.radio('分析导航', pages, format_func=lambda x: f'{page_numbers[x]}　{x}', key='page', label_visibility='collapsed')
     st.divider()
-    st.caption('筛选数据')
+    st.html('<div class="side-section">筛选</div>')
     cluster_view = page == '出行模式' and st.session_state.get('mode', '进出方向') == '站点聚类'
     fixed_network = page in ['天气关联', '数据质量与说明']
     dates_value = st.date_input('日期范围', value=(pd.Timestamp('2017-05-01').date(), pd.Timestamp('2017-08-31').date()),
@@ -99,8 +122,8 @@ with st.sidebar:
     direction_label = st.selectbox('客流方向', ['进站', '出站'] + (['进出总量'] if page == '站点空间' else []),
         disabled=fixed_network or cluster_view or page == '出行模式', key='direction')
     st.divider()
-    st.caption('2017年5—8月 · 302站\n\n聚合客流数据 · 全程本地运行')
-    st.caption('图表右上角相机按钮可下载 PNG。')
+    st.caption('2017年5—8月 · 302站 · 本地运行')
+    st.caption('图表相机按钮导出 PNG；明细区导出 CSV。')
 
 if len(dates_value) != 2:
     st.info('请选择完整的开始和结束日期。')
@@ -116,15 +139,18 @@ n = a.filter_data(tables['network_daily'], dates, day_type)
 scope = f'所选{len(selected)}站' if selected and not fixed_network else '全网'
 context = f'{dates[0]} — {dates[1]} · {day_type} · {scope} · {a.FLOW_NAMES[direction]}人次'
 descriptions = {
-    '项目概览': ('看见一座城市的流动节奏', '从302个站点的进出客流出发，观察时间高峰、空间分布与出行模式。每一张图都对应一个可以用数据回答的问题。'),
-    '时间规律': ('一天之中，客流如何变化？', '按有效日期计算小时日均，比较工作日和非工作日的高峰形态；日期热力图展示每天的差异。'),
-    '站点空间': ('繁忙站点，落在城市的哪里？', '把站点客流放回真实地理位置，结合日均排名观察空间分布。人次反映规模，不直接等同于车厢拥挤程度。'),
-    '出行模式': ('从进与出，理解出行模式', '对照早晚进出方向、三类行程构成和站点分组，解释曲线中的差异。'),
-    '天气关联': ('天气变化，是否伴随客流变化？', '以日期为样本，把全网进站量与城市代表点天气对照；工作日和非工作日分别观察。'),
-    '数据质量与说明': ('先理解数据，再理解结论', '保留原始检查结果，明确异常日期、字段含义和分析边界，让图表中的每一个数字有据可查。')}
+    '项目概览': ('客流总览', '先看规模和每日变化，再进入专题分析。'),
+    '时间规律': ('高峰时段与日期差异', '比较工作日、非工作日和逐日小时分布。'),
+    '站点空间': ('站点客流与空间分布', '在地图定位高客流站，并按统一口径排名。'),
+    '出行模式': ('进出方向与出行构成', '查看早晚方向、三类行程和站点分组。'),
+    '天气关联': ('天气与全网客流', '按日期类型比较温度、降雨和进站量。'),
+    '数据质量与说明': ('数据质量与统计口径', '查看异常日期、字段含义和处理结果。')}
 title, intro = descriptions[page]
-st.html(f'<section class="hero"><div class="eyebrow">SHANGHAI / 2017 · {html.escape(page)}</div><h1>{title}</h1><p>{intro}</p></section>')
-st.caption(context if not cluster_view else '站点聚类使用四个月有效数据的固定结果；日期和方向筛选不改变分组。')
+st.html(f'''<section class="page-head"><div class="head-row"><div class="head-main">
+<div class="page-index">{page_numbers[page]}</div><div><h1>{html.escape(title)}</h1><p>{html.escape(intro)}</p></div>
+</div><div class="head-meta"><span>117 个有效日</span><span>302 个站点</span><span>离线运行</span></div></div></section>''')
+context_text = context if not cluster_view else '站点聚类使用四个月固定结果；日期和方向筛选不改变分组。'
+st.html(f'<div class="context-line"><b>当前范围</b><span>{html.escape(context_text)}</span></div>')
 if h.empty and page != '数据质量与说明' and not cluster_view:
     st.warning('当前选择没有有效数据。六个计数缺损日已排除，请扩大日期范围或改选其他日期。')
     st.stop()
@@ -132,6 +158,22 @@ if h.empty and page != '数据质量与说明' and not cluster_view:
 if page == '项目概览':
     days = a.daily_series(h, direction)
     values = days.value
+    st.subheader('选择分析功能')
+    shortcuts = [
+        ('时间规律', '高峰 · 热力图', 'quick_time'),
+        ('站点空间', '地图 · 排名', 'quick_station'),
+        ('出行模式', '方向 · 构成 · 聚类', 'quick_mode'),
+        ('天气关联', '相关 · 雨日比较', 'quick_weather'),
+        ('数据质量与说明', '异常 · 字段 · 来源', 'quick_quality'),
+    ]
+    def open_page(target):
+        st.session_state.page = target
+    for col, (target, note, key) in zip(st.columns(5), shortcuts):
+        with col:
+            st.button(f'{page_numbers[target]}  {target.replace("与说明", "")}', key=key,
+                      width='stretch', on_click=open_page, args=(target,))
+            st.caption(note)
+    st.subheader('当前范围概况')
     cols = st.columns(4)
     for col, label, value in zip(cols, ['累计客流 / 万人次', '日均客流 / 万人次', '有效日期 / 天', '分析站点 / 个'],
             [f'{values.sum()/10000:,.1f}', f'{values.mean()/10000:,.1f}', str(len(days)), str(h.station_id.nunique())]):
@@ -140,15 +182,13 @@ if page == '项目概览':
     left, right = st.columns([1.6, 1])
     with left:
         plot_days = days.set_index('date').reindex(pd.date_range(*dates)).rename_axis('date').reset_index()
-        fig = c.line(plot_days, 'date', 'value', title='四个月的客流起伏')
+        fig = c.line(plot_days, 'date', 'value', title='每日客流变化')
         show_plot(fig, 'overview_daily')
     with right:
         profile = a.hourly_profile(h, direction)
         show_plot(c.line(profile, 'hour', 'value', '日类型', '工作日与非工作日'), 'overview_hourly')
     peak = days.loc[days.value.idxmax()]
-    insight(f'当前范围内，单日最高出现在{peak.date:%Y年%m月%d日}，为{peak.value/10000:,.1f}万人次。日均为{values.mean()/10000:,.1f}万人次；六个原始计数缺损日不参与计算。')
-    st.subheader('五个问题，一条分析主线')
-    st.markdown('**时间**：两类日期的高峰有何不同？　 **空间**：哪些站点更繁忙？\n\n**方向**：早晚进出如何变化？　 **构成**：三类出行各占多少？　 **天气**：客流与温度、雨量是否有关？')
+    insight(f'{peak.date:%Y年%m月%d日}最高，为{peak.value/10000:,.1f}万人次；日均{values.mean()/10000:,.1f}万人次。六个计数缺损日未计入。')
     summary = pd.DataFrame({'统计量':['总量','日均','日中位数','日最小值','日最大值'],
         '人次':[values.sum(),values.mean(),values.median(),values.min(),values.max()]})
     table_export(summary, 'descriptive_statistics', '查看描述性统计并导出 CSV')
@@ -207,7 +247,7 @@ elif page == '出行模式':
         fig = c.bar(shown, 'name', '方向指数', '时段', '早晚进出方向 · 默认显示繁忙前10站', barmode='group')
         fig.update_yaxes(range=[-1, 1]); fig.update_xaxes(title=None)
         show_plot(fig, 'direction_index')
-        insight('方向指数 =（进站−出站）/（进站+出站）。正值表示进站较多，负值表示出站较多；早峰取07:00–09:00，晚峰取17:00–19:00。它描述进出方向，不直接证明周边土地用途。')
+        insight('方向指数＝（进站−出站）÷（进站+出站）。正值偏进站，负值偏出站；早峰07:00–09:00，晚峰17:00–19:00。该指标不用于判断周边土地用途。')
         table_export(peaks, 'direction_data')
     elif mode == '出行构成':
         chosen = st.radio('构成方向', ['进站', '出站'], horizontal=True)
@@ -228,7 +268,7 @@ elif page == '出行模式':
         long['出行类型'] = long['出行类型'].map({p+suffix:v for p,v in a.TYPE_NAMES.items()})
         show_plot(c.line(long,'hour','value','出行类型','各类出行的小时日均'), 'trip_hourly')
         top = comp.loc[comp['占比'].idxmax()] if comp['占比'].notna().any() else None
-        insight(f'当前{chosen}数据中，'+(f'{top["出行类型"]}占比最高，为{top["占比"]:.1%}。' if top is not None else '总量为0，无法计算占比。')+'C/HBO/NHB是发布方推断的行程类别，本组没有重新训练分类模型。')
+        insight(f'{chosen}数据中，'+(f'{top["出行类型"]}占比最高，为{top["占比"]:.1%}。' if top is not None else '总量为0，无法计算占比。')+'C/HBO/NHB为发布方推断类别，本项目未重新训练分类模型。')
         table_export(comp, 'trip_composition')
     elif mode == '站点聚类':
         try:
@@ -253,7 +293,7 @@ elif page == '出行模式':
             fig.update_yaxes(tickformat='.0%'); show_plot(fig, 'cluster_profiles')
             st.caption(f'本组 {len(chosen_ids)} 站。最接近组平均曲线的代表站：'+ '、'.join(names[x] for x in chosen_ids[:8]) + (' 等' if len(chosen_ids)>8 else ''))
         show_plot(c.bar(evaluation,'groups','silhouette',title='候选组数的轮廓系数'), 'cluster_evaluation')
-        insight('按工作日、非工作日的进出站小时比例分组，避免只按大站小站划分。分3组为初始参照，比较2–5组后选择轮廓系数最高者。评价使用同一批已有数据，不代表未来预测能力。')
+        insight('以工作日、非工作日的进出站小时占比聚类。比较2—5组后，采用轮廓系数最高的组数；该分数不代表预测能力。')
         counts = labels.groupby('cluster').size().rename('站点数').reset_index()
         st.dataframe(counts.rename(columns={'cluster':'分组'}),hide_index=True)
         table_export(labels.drop(columns=['center_distance']).merge(stations[['station_id','name']],on='station_id'), 'cluster_members')
@@ -274,9 +314,9 @@ elif page == '天气关联':
         show_plot(fig,'weather_rain')
     fig = c.style(px.box(joined,x='日类型',y='inFlow',color='降雨情况',points='all',labels=c.LABELS,color_discrete_sequence=c.COLORS), '同类日期的有雨与无雨比较')
     show_plot(fig,'weather_comparison')
-    st.dataframe(stats,hide_index=True,use_container_width=True)
-    insight(f'当前有{len(joined)}个客流与天气都完整的日期。正相关表示两者较常同向变化，负相关表示反向变化；不能据此判断天气导致了客流变化。月份、节假日等也可能影响结果。')
-    st.caption('天气为城市代表点（31.2222°N，121.4581°E），不是每个站点的观测。相关系数使用Spearman方法，按日期类型分别计算；样本过少或变量恒定时不计算。')
+    st.dataframe(stats,hide_index=True,width='stretch')
+    insight(f'共有{len(joined)}个日期同时具备客流和天气数据。相关方向不等于因果；月份、节假日等因素也会影响客流。')
+    st.caption('天气取城市代表点（31.2222°N，121.4581°E）。按日期类型计算 Spearman 相关；样本不足或变量恒定时不计算。')
     table_export(stats,'weather_correlations'); table_export(joined,'weather_daily')
 
 else:
@@ -288,17 +328,17 @@ else:
         '数量':[q[x] for x in ['missing_cells','exact_duplicates_removed','conflicting_rows','invalid_count_rows','component_mismatch_rows','zero_in_out_rows']]})
     left,right=st.columns([1,1.3])
     with left:
-        st.subheader('真实检查结果'); st.dataframe(checks,hide_index=True,use_container_width=True)
+        st.subheader('真实检查结果'); st.dataframe(checks,hide_index=True,width='stretch')
     with right:
         bad=pd.DataFrame(q['excluded_days'])
         context='2017年5—8月 · 原始质量检查 · 六个缺损日'
         show_plot(c.bar(bad,'date','inFlow',title='六个缺损日仍有残余计数'), 'quality_bad_days')
     network=tables['network_daily']
     st.write(f'原始123日日均进站：{network.inFlow.mean()/10000:,.1f}万人次；排除六日后117日日均进站：{network.loc[network.is_valid,"inFlow"].mean()/10000:,.1f}万人次。')
-    insight('六个异常日的记录行数完整，但客流计数严重不足。保留原值并排除常规分析，不将缺损补成0；正常零值和真实高峰也不会被直接删除。')
+    insight('六个日期记录行数完整，但客流计数明显缺损。处理时保留原值、排除常规分析，不补0；正常零值和高峰不删除。')
     st.subheader('字段与数据边界')
     st.dataframe(pd.DataFrame({'字段':['date / startTime / endTime','station','inFlow / outFlow','C / HBO / NHB','isWorday','lon / lat','temperature_2m / rain'],
-        '说明':['本地日期及10分钟区间，起点包含、终点不包含','302站的站点ID','聚合进出人次，不是去重人数','发布方推断：通勤 / 居家其他 / 非居家','源日历工作日标记，包含调休','发布方经纬度；坐标参考系未声明','代表点温度（°C）与小时雨量（mm）']}),hide_index=True,use_container_width=True)
+        '说明':['本地日期及10分钟区间，起点包含、终点不包含','302站的站点ID','聚合进出人次，不是去重人数','发布方推断：通勤 / 居家其他 / 非居家','源日历工作日标记，包含调休','发布方经纬度；坐标参考系未声明','代表点温度（°C）与小时雨量（mm）']}),hide_index=True,width='stretch')
     st.markdown('数据：[MetroFlow作者仓库](https://github.com/Ariza-Sun/MetroFlow) · [Figshare数据](https://doi.org/10.6084/m9.figshare.28844942) · [数据论文](https://doi.org/10.1038/s41597-025-05416-8)。数据采用 CC BY 4.0，展示范围为2017年5—8月。来源链接供查证，系统运行不依赖联网。')
     st.caption('开发工具：OpenAI Codex。成员：林睿信、吴旻昊、朱子墨、邢雨晨，计划分工各25%。AI过程与实际验证材料另行留档。')
     table_export(checks,'quality_checks'); table_export(bad,'quality_excluded_days')

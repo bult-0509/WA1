@@ -16,7 +16,7 @@ CONFIG = {'displaylogo': False, 'scrollZoom': False, 'displayModeBar': 'hover',
 
 def style(fig, title, height=410, subtitle=''):
     fig.update_layout(template='plotly_white', title={'text': title + (f'<br><sup>{subtitle}</sup>' if subtitle else ''), 'font': {'size': 17}, 'x': .02},
-                      font={'family': 'Microsoft YaHei, SimHei, Arial', 'color': '#243D51', 'size': 12},
+                      font={'family': 'Alimama FangYuanTi VF, Microsoft YaHei, SimHei, Arial', 'color': '#243D51', 'size': 12},
                       colorway=COLORS, paper_bgcolor='white', plot_bgcolor='white', height=height,
                       margin={'t': 80 if subtitle else 60, 'b': 45, 'l': 55, 'r': 25},
                       legend={'orientation': 'h', 'y': -0.17, 'title': None},

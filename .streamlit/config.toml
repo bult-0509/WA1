@@ -12,3 +12,4 @@ address = "127.0.0.1"
 headless = true
 fileWatcherType = "none"
 runOnSave = false
+enableStaticServing = true
