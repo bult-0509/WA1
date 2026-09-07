@@ -19,7 +19,7 @@ def build():
         raise RuntimeError('缺少已验证的.runtime环境，请按README在构建机准备。')
     # requirements.txt包含实际验证过的全部依赖，第三方版权随runtime保留。
     source=dist/'代码.zip'
-    core=['app.py','prepare_data.py','build_portable.py','launch.py','README.md','requirements.txt']
+    core=['app.py','prepare_data.py','prepare_poi_data.py','build_portable.py','launch.py','一键运行.bat','README.md','requirements.txt']
     with zipfile.ZipFile(source,'w',zipfile.ZIP_DEFLATED,compresslevel=9) as z:
         for name in core:z.write(ROOT/name,name)
         for folder in ['src','assets','static','tests','.streamlit']:

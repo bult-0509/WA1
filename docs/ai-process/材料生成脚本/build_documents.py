@@ -1,3 +1,9 @@
+"""2026-09-04首版材料生成脚本，保留用于AI过程追溯。
+
+最终DOCX已经在此基础上加入界面改版、边流量附件、POI分析和验收说明；
+不要直接运行本脚本覆盖docs/deliverables中的最终文件。
+"""
+
 from pathlib import Path
 from copy import deepcopy
 import json, re

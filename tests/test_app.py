@@ -11,7 +11,7 @@ class AppPages(unittest.TestCase):
     def test_pages_and_modes(self):
         # 本版本AppTest不支持连续序列化单选segmented_control；每页从独立状态启动。
         # 真实页面之间的切换与标签点击另在浏览器验证。
-        for page in ['时间规律','站点空间','出行模式','天气关联','数据质量与说明','项目概览']:
+        for page in ['时间规律','站点空间','出行模式','天气关联','POI与客流','数据质量','项目概览']:
             app=AppTest.from_file(str(APP),default_timeout=60)
             app.session_state['page']=page
             app.run()

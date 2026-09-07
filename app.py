@@ -1,4 +1,4 @@
-"""本地六页客流分析界面。先运行prepare_data.py，日常演示无需原始大文件。"""
+"""本地七页客流分析界面。先准备汇总数据，日常演示无需原始大文件。"""
 from pathlib import Path
 import json
 import html
@@ -65,6 +65,9 @@ def load_data():
     tables = {name: pd.read_parquet(DATA / f'{name}.parquet') for name in
               ['station_hourly', 'station_daily', 'network_daily', 'stations', 'calendar', 'weather_daily']}
     tables['quality'] = json.loads((DATA / 'quality.json').read_text(encoding='utf-8'))
+    tables['poi_stations'] = pd.read_parquet(DATA / 'poi_stations.parquet')
+    tables['poi_city'] = pd.read_parquet(DATA / 'poi_city.parquet')
+    tables['poi_quality'] = json.loads((DATA / 'poi_quality.json').read_text(encoding='utf-8'))
     return tables
 
 
@@ -100,7 +103,10 @@ def table_export(table, key, label='查看数据并导出 CSV'):
         renamed = table.rename(columns={'station_id': '站点ID', 'name': '站名', 'date': '日期',
             'hour': '小时', 'value': '人次', 'days': '有效天数', 'inFlow': '进站人次', 'outFlow': '出站人次',
             'is_workday': '工作日标记', 'cluster': '分组', 'groups': '分组数', 'silhouette': '轮廓系数',
-            'proportion': '占比', 'temperature_2m': '日均温度_摄氏度', 'rain': '日雨量_mm'})
+            'proportion': '占比', 'temperature_2m': '日均温度_摄氏度', 'rain': '日雨量_mm',
+            'flow': '站点日均客流', 'poi_count_500m': '500米功能POI数', 'poi_count_1000m': '1公里功能POI数',
+            'poi_density_1000m': '1公里POI密度_个每平方公里', 'diversity': '功能多样性',
+            'dominant_group': '主要功能组', 'dominant_share': '主要功能组占比', 'rank_gap': '客流与POI百分位差'})
         st.dataframe(renamed, hide_index=True, width='stretch')
         export = renamed.copy()
         export['筛选范围'] = context
@@ -119,7 +125,7 @@ except (OSError, ValueError, KeyError) as error:
 
 stations = tables['stations']
 names = dict(zip(stations.station_id, stations.name))
-pages = ['项目概览', '时间规律', '站点空间', '出行模式', '天气关联', '数据质量与说明']
+pages = ['项目概览', '时间规律', '站点空间', '出行模式', '天气关联', 'POI与客流', '数据质量']
 page_numbers = {name: f'{i:02d}' for i, name in enumerate(pages, start=1)}
 with st.sidebar:
     st.html('<div class="side-brand"><b>沪上流动</b><p>METROFLOW · SHANGHAI</p></div>')
@@ -129,12 +135,13 @@ with st.sidebar:
     st.html('<div class="side-section">筛选</div>')
     cluster_view = page == '出行模式' and st.session_state.get('mode', '进出方向') == '站点聚类'
     dynamic_view = page == '站点空间' and st.session_state.get('space_view', '站点总览') == '10分钟动画'
-    fixed_network = page in ['天气关联', '数据质量与说明'] or dynamic_view
+    poi_view = page == 'POI与客流'
+    fixed_network = page in ['天气关联', '数据质量'] or dynamic_view
     dates_value = st.date_input('日期范围', value=(pd.Timestamp('2017-05-01').date(), pd.Timestamp('2017-08-31').date()),
         min_value=pd.Timestamp('2017-05-01').date(), max_value=pd.Timestamp('2017-08-31').date(), disabled=cluster_view or dynamic_view, key='dates')
     day_type = st.selectbox('日期类型', ['全部', '工作日', '非工作日'], disabled=cluster_view or dynamic_view, key='day_type')
     selected = st.multiselect('选择站点（留空为全部）', stations.station_id.tolist(),
-        format_func=lambda x: f'{names[x]} · {x}', disabled=fixed_network, key='stations', placeholder='全部302站')
+        format_func=lambda x: f'{names[x]} · {x}', disabled=fixed_network or poi_view, key='stations', placeholder='全部302站')
     direction_label = st.selectbox('客流方向', ['进站', '出站'] + (['进出总量'] if page == '站点空间' else []),
         disabled=fixed_network or cluster_view or page == '出行模式', key='direction')
     st.divider()
@@ -148,7 +155,7 @@ dates = tuple(dates_value)
 direction = {v: k for k, v in a.FLOW_NAMES.items()}[direction_label]
 if fixed_network:
     direction = 'inFlow'
-filter_stations = None if fixed_network else selected
+filter_stations = None if fixed_network or poi_view else selected
 h = a.filter_data(tables['station_hourly'], dates, day_type, filter_stations)
 d = a.filter_data(tables['station_daily'], dates, day_type, filter_stations)
 n = a.filter_data(tables['network_daily'], dates, day_type)
@@ -160,9 +167,15 @@ descriptions = {
     '站点空间': ('站点客流与空间分布', '查看站点排名，或播放10分钟边流量变化。'),
     '出行模式': ('进出方向与出行构成', '查看早晚方向、三类行程和站点分组。'),
     '天气关联': ('天气与全网客流', '按日期类型比较温度、降雨和进站量。'),
-    '数据质量与说明': ('数据质量与统计口径', '查看异常日期、字段含义和处理结果。')}
+    'POI与客流': ('站点周边功能与客流', '比较1公里站点圈的设施密度、功能组合和客流差异。'),
+    '数据质量': ('数据质量与统计口径', '查看异常日期、字段含义和处理结果。')}
 title, intro = descriptions[page]
-meta_items = ['9 个有效日', '349 条邻接边', '离线运行'] if dynamic_view else ['117 个有效日', '302 个站点', '离线运行']
+if dynamic_view:
+    meta_items = ['9 个有效日', '349 条邻接边', '离线运行']
+elif poi_view:
+    meta_items = ['162.5 万条 POI', '1 公里站点圈', '302 个站点']
+else:
+    meta_items = ['117 个有效日', '302 个站点', '离线运行']
 meta_html = ''.join(f'<span>{html.escape(item)}</span>' for item in meta_items)
 st.html(f'''<section class="page-head"><div class="head-row"><div class="head-main">
 <div class="page-index">{page_numbers[page]}</div><div><h1>{html.escape(title)}</h1><p>{html.escape(intro)}</p></div>
@@ -174,7 +187,7 @@ elif cluster_view:
 else:
     context_text = context
 st.html(f'<div class="context-line"><b>当前范围</b><span>{html.escape(context_text)}</span></div>')
-if h.empty and page != '数据质量与说明' and not cluster_view and not dynamic_view:
+if h.empty and page != '数据质量' and not cluster_view and not dynamic_view:
     st.warning('当前选择没有有效数据。六个计数缺损日已排除，请扩大日期范围或改选其他日期。')
     st.stop()
 
@@ -187,15 +200,17 @@ if page == '项目概览':
         ('站点空间', '地图 · 排名 · 动画', 'quick_station'),
         ('出行模式', '方向 · 构成 · 聚类', 'quick_mode'),
         ('天气关联', '相关 · 雨日比较', 'quick_weather'),
-        ('数据质量与说明', '异常 · 字段 · 来源', 'quick_quality'),
+        ('POI与客流', '密度 · 多样性 · 差异', 'quick_poi'),
+        ('数据质量', '异常 · 字段 · 来源', 'quick_quality'),
     ]
     def open_page(target):
         st.session_state.page = target
-    for col, (target, note, key) in zip(st.columns(5), shortcuts):
-        with col:
-            st.button(f'{page_numbers[target]}  {target.replace("与说明", "")}', key=key,
-                      width='stretch', on_click=open_page, args=(target,))
-            st.caption(note)
+    for start in range(0, len(shortcuts), 3):
+        for col, (target, note, key) in zip(st.columns(3), shortcuts[start:start + 3]):
+            with col:
+                st.button(f'{page_numbers[target]}  {target.replace("与说明", "")}', key=key,
+                          width='stretch', on_click=open_page, args=(target,))
+                st.caption(note)
     st.subheader('当前范围概况')
     cols = st.columns(4)
     for col, label, value in zip(cols, ['累计客流 / 万人次', '日均客流 / 万人次', '有效日期 / 天', '分析站点 / 个'],
@@ -351,6 +366,96 @@ elif page == '天气关联':
     insight(f'共有{len(joined)}个日期同时具备客流和天气数据。相关方向不等于因果；月份、节假日等因素也会影响客流。')
     st.caption('天气取城市代表点（31.2222°N，121.4581°E）。按日期类型计算 Spearman 相关；样本不足或变量恒定时不计算。')
     table_export(stats,'weather_correlations'); table_export(joined,'weather_daily')
+
+elif page == 'POI与客流':
+    poi = tables['poi_stations']
+    quality = tables['poi_quality']
+    linked, correlations, density_comparison, composition = a.poi_flow_analysis(poi, d, direction)
+    rho = correlations.iloc[0]
+    median_poi = linked.poi_count_1000m.median()
+    columns = st.columns(4)
+    values = [f'{quality["raw_rows"] / 10000:,.1f} 万', f'{quality["functional_rows"] / 10000:,.1f} 万',
+              f'{median_poi:,.0f}', f'{rho["Spearman相关系数"]:.3f}']
+    labels = ['原始 POI', '用于功能分析', '站点圈 POI 中位数', '密度—客流相关']
+    for column, label, value in zip(columns, labels, values):
+        column.metric(label, value)
+
+    left, right = st.columns([1.15, 1])
+    with left:
+        scatter_data = linked[linked.poi_count_1000m.gt(0)]
+        scatter = px.scatter(scatter_data, x='poi_count_1000m', y='flow', color='dominant_group', size='diversity',
+            hover_name='name', hover_data={'station_id': True, 'poi_count_1000m': ':,', 'flow': ':,.0f',
+                                           'diversity': ':.3f', 'dominant_group': True},
+            labels={'poi_count_1000m': '1公里功能POI数', 'flow': f'站点日均{a.FLOW_NAMES[direction]}人次',
+                    'dominant_group': '主要功能组', 'diversity': '功能多样性'},
+            color_discrete_sequence=c.COLORS)
+        scatter.update_xaxes(type='log'); scatter.update_yaxes(type='log')
+        show_plot(c.style(scatter, '设施密度与客流规模', 535), 'poi_flow_scatter')
+        st.caption('横纵轴采用对数刻度，圆点大小表示功能多样性。相关系数按302个站点计算；上海市POI不覆盖位于昆山的花桥、光明路两站，散点图不绘制其零值。')
+    with right:
+        poi_map = linked[['station_id', 'poi_count_1000m']].rename(columns={'poi_count_1000m': 'value'})
+        show_plot(c.station_map(stations, poi_map, title='1公里站点圈功能POI分布', value_label='POI数'), 'poi_station_map')
+        st.caption('站点圈允许重叠，同一POI可能进入相邻站点的统计；地图用于比较站点，不可跨站相加。')
+
+    lower = density_comparison.iloc[0]
+    upper = density_comparison.iloc[-1]
+    interval = f'{rho["95%区间下限"]:.3f}～{rho["95%区间上限"]:.3f}'
+    ratio = upper['客流中位数'] / lower['客流中位数'] if lower['客流中位数'] else np.nan
+    insight(f'1公里功能POI数与站点日均{a.FLOW_NAMES[direction]}客流的Spearman相关系数为{rho["Spearman相关系数"]:.3f}，重复抽样95%区间为{interval}。高密度组的客流中位数约为低密度组的{ratio:.2f}倍；这是同向关系，不表示POI增加会直接导致客流增长。')
+
+    left, right = st.columns(2)
+    with left:
+        comparison_fig = px.bar(density_comparison, x='density_group', y='客流中位数',
+            category_orders={'density_group': ['低密度', '中低密度', '中高密度', '高密度']},
+            labels={'density_group': '1公里POI密度分组', '客流中位数': f'站点日均{a.FLOW_NAMES[direction]}人次'},
+            color='density_group', color_discrete_sequence=c.COLORS)
+        show_plot(c.style(comparison_fig, '按POI密度四等分比较客流'), 'poi_density_groups')
+    with right:
+        difference = composition[['功能组', '占比差']].drop_duplicates().sort_values('占比差')
+        difference['方向'] = np.where(difference['占比差'].ge(0), '客流前25%更高', '客流后25%更高')
+        difference_fig = px.bar(difference, x='占比差', y='功能组', orientation='h',
+            color='方向', labels={'占比差': '两组POI构成占比差'}, color_discrete_sequence=[c.COLORS[0], c.COLORS[1]])
+        difference_fig.update_xaxes(tickformat='.1%'); difference_fig.add_vline(x=0, line_color='#8799A3', line_width=1)
+        show_plot(c.style(difference_fig, '高低客流站的周边功能差异'), 'poi_composition_difference')
+        st.caption('正值表示该功能在客流前25%站点周边占比更高；比较的是构成比例，不受POI总量直接影响。')
+
+    st.subheader('单站结构与偏离站点')
+    focus = st.selectbox('查看一个站点', linked.sort_values('flow', ascending=False).station_id,
+                         format_func=lambda x: f'{names[x]} · {x}', key='poi_focus_station')
+    station = linked.loc[linked.station_id.eq(focus)].iloc[0]
+    group_columns = [column for column in linked if column.startswith('group_')]
+    station_groups = pd.DataFrame({'功能组': [x.removeprefix('group_') for x in group_columns],
+                                   'POI数': station[group_columns].to_numpy(int)})
+    station_groups['占比'] = station_groups['POI数'] / station_groups['POI数'].sum()
+    left, right = st.columns([1, 1.3])
+    with left:
+        station_fig = px.bar(station_groups.sort_values('占比'), x='占比', y='功能组', orientation='h',
+                             color='功能组', color_discrete_sequence=c.COLORS)
+        station_fig.update_xaxes(tickformat='.0%')
+        show_plot(c.style(station_fig, f'{station["name"]} · 1公里功能构成'), 'poi_station_composition')
+    with right:
+        high = linked.nlargest(5, 'rank_gap').assign(偏离方向='客流排名高于POI排名')
+        low = linked.nsmallest(5, 'rank_gap').assign(偏离方向='POI排名高于客流排名')
+        outliers = pd.concat([high, low], ignore_index=True)
+        st.dataframe(outliers[['name', 'station_id', '偏离方向', 'flow', 'poi_count_1000m', 'diversity', 'rank_gap']]
+            .rename(columns={'name': '站名', 'station_id': '站点ID', 'flow': f'日均{a.FLOW_NAMES[direction]}人次',
+                             'poi_count_1000m': '1公里POI数', 'diversity': '多样性', 'rank_gap': '百分位差'}),
+            hide_index=True, width='stretch')
+        st.caption('百分位差用于发现“客流规模与周边设施密度不一致”的站点，可能与换乘、线路位置、枢纽功能或数据覆盖有关。')
+    table_export(linked, 'poi_station_analysis')
+    table_export(correlations, 'poi_correlations')
+    table_export(density_comparison, 'poi_density_comparison')
+    table_export(composition, 'poi_composition_comparison')
+
+    with st.expander('数据质量与计算口径'):
+        st.write(f'原始{quality["raw_rows"]:,}行；按“名称、地址、坐标、细分类”移除候选重复{quality["candidate_duplicates_removed"]:,}行。'
+                 f'电话字段缺失{quality["missing_cells"]["TELEPHONE"]:,}行，但不参与分析；一级类型和坐标没有缺失。')
+        st.write(f'剔除仅作地图标注的{len(quality["excluded_base_types"])}类一级类型后，保留{quality["functional_rows"]:,}个功能POI。'
+                 '多样性采用归一化Shannon指数，范围0—1，越高表示九类功能越均衡。')
+        st.write(f'站点坐标转换前，与最近“地铁站”POI的中位距离为{quality["median_nearest_subway_m_before_conversion"]:,.1f}米；'
+                 f'统一坐标后为{quality["median_nearest_subway_m_after_conversion"]:,.1f}米，'
+                 f'{quality["stations_within_300m_after_conversion"]}/{quality["station_count"]}个站在300米内匹配到地铁站POI。')
+        st.caption('POI为2017年静态快照，客流为2017年5—8月。站点圈采用直线距离，不代表实际步行路径；相关和分组比较均不能证明因果。')
 
 else:
     q = tables['quality']

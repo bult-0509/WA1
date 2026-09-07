@@ -34,7 +34,7 @@ def bar(data, x, y, color=None, title='', **kwargs):
     return style(px.bar(data, x=x, y=y, color=color, labels=LABELS, color_discrete_sequence=COLORS, **kwargs), title)
 
 
-def station_map(stations, values, selected=None, cluster=False, title='站点客流空间分布'):
+def station_map(stations, values, selected=None, cluster=False, title='站点客流空间分布', value_label='日均人次'):
     value_column = 'cluster' if cluster else 'value'
     f = stations.merge(values[['station_id', value_column]], on='station_id', how='left', validate='one_to_one')
     points = stations.set_index('station_id')
@@ -60,9 +60,9 @@ def station_map(stations, values, selected=None, cluster=False, title='站点客
         fig.add_trace(go.Scatter(x=sub.lon, y=sub.lat, mode='markers', showlegend=False,
             marker={'size': 5 + 17 * np.sqrt(sub.value / maximum), 'color': sub.value,
                     'colorscale': [[0, '#BCDCD8'], [.4, '#5AADA5'], [1, '#12545D']], 'showscale': True,
-                    'colorbar': {'title': '日均人次', 'thickness': 12}, 'line': {'width': .7, 'color': 'white'}},
+                    'colorbar': {'title': value_label, 'thickness': 12}, 'line': {'width': .7, 'color': 'white'}},
             customdata=np.column_stack([sub.name, sub.station_id, sub.value]),
-            hovertemplate='%{customdata[0]} · %{customdata[1]}<br>日均 %{customdata[2]:,.0f} 人次<extra></extra>'))
+            hovertemplate=f'%{{customdata[0]}} · %{{customdata[1]}}<br>{value_label} %{{customdata[2]:,.0f}}<extra></extra>'))
     if selected:
         highlight = f[f.station_id.isin(selected)]
         fig.add_trace(go.Scatter(x=highlight.lon, y=highlight.lat, mode='markers',

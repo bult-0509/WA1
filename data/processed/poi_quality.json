@@ -1,0 +1,61 @@
+{
+  "source_file": "2017上海市POI_全部.csv",
+  "source_bytes": 296820575,
+  "raw_rows": 1625290,
+  "columns": 14,
+  "candidate_duplicates_removed": 370,
+  "unique_valid_rows": 1624920,
+  "functional_rows": 1303199,
+  "excluded_base_types": [
+    "地名地址信息",
+    "室内设施",
+    "通行设施",
+    "道路附属设施"
+  ],
+  "base_type_count": 19,
+  "analysis_groups": [
+    "餐饮",
+    "购物",
+    "生活服务",
+    "就业金融",
+    "居住商务",
+    "科教医疗",
+    "休闲文旅",
+    "交通服务",
+    "公共服务"
+  ],
+  "missing_cells": {
+    "来源分类": 0,
+    "NAME": 0,
+    "ADDRESS": 0,
+    "TELEPHONE": 1172381,
+    "PROVINCE": 0,
+    "CITY": 0,
+    "COUNTY": 0,
+    "CODE": 0,
+    "LON": 0,
+    "LAT": 0,
+    "TYPECODE": 11915,
+    "BASETYPE": 0,
+    "SUBTYPE": 0,
+    "CATEGORY": 0
+  },
+  "invalid_coordinates": 0,
+  "outside_shanghai_bounds": 0,
+  "station_catchment_radius_m": [
+    500,
+    1000
+  ],
+  "coordinate_note": "POI按高德分类与坐标特征视为GCJ-02；MetroFlow站点WGS84坐标先转换为GCJ-02。",
+  "subway_reference_points": 383,
+  "median_nearest_subway_m_before_conversion": 476.3,
+  "median_nearest_subway_m_after_conversion": 15.7,
+  "stations_within_300m_after_conversion": 298,
+  "station_count": 302,
+  "stations_with_functional_poi_1000m": 300,
+  "uncovered_station_names": [
+    "Huaqiao",
+    "Guangming Road"
+  ],
+  "catchment_overlap_note": "各站1公里圆形范围可能重叠，跨站合计会重复计算POI。"
+}
