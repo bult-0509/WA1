@@ -7,6 +7,7 @@ import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
 import streamlit as st
+import streamlit.components.v1 as components
 from src import analysis as a, charts as c
 from src.data_processing import FLOW
 
@@ -67,6 +68,20 @@ def load_data():
     return tables
 
 
+@st.cache_data(show_spinner=False)
+def load_metro_map_html():
+    """把本地动画资源装入Streamlit组件；避免浏览器阻止静态HTML内嵌。"""
+    base = ROOT / 'static/metro_map'
+    page = (base / 'metro_map.html').read_text(encoding='utf-8')
+    leaflet_css = (base / 'vendor/leaflet/leaflet.css').read_text(encoding='utf-8')
+    page = page.replace('<link rel="stylesheet" href="vendor/leaflet/leaflet.css"/>', f'<style>{leaflet_css}</style>')
+    page = page.replace('../fonts/AlimamaFangYuanTiVF-Thin.woff2', '/app/static/fonts/AlimamaFangYuanTiVF-Thin.woff2')
+    for source in ['vendor/leaflet/leaflet.js', 'stations.js', 'edges.js', 'data_flow_edges.js']:
+        script = (base / source).read_text(encoding='utf-8')
+        page = page.replace(f'<script src="{source}"></script>', f'<script>{script}</script>')
+    return page
+
+
 def insight(text):
     st.html(f'<div class="insight">{html.escape(text)}</div>')
 
@@ -113,10 +128,11 @@ with st.sidebar:
     st.divider()
     st.html('<div class="side-section">筛选</div>')
     cluster_view = page == '出行模式' and st.session_state.get('mode', '进出方向') == '站点聚类'
-    fixed_network = page in ['天气关联', '数据质量与说明']
+    dynamic_view = page == '站点空间' and st.session_state.get('space_view', '站点总览') == '10分钟动画'
+    fixed_network = page in ['天气关联', '数据质量与说明'] or dynamic_view
     dates_value = st.date_input('日期范围', value=(pd.Timestamp('2017-05-01').date(), pd.Timestamp('2017-08-31').date()),
-        min_value=pd.Timestamp('2017-05-01').date(), max_value=pd.Timestamp('2017-08-31').date(), disabled=cluster_view, key='dates')
-    day_type = st.selectbox('日期类型', ['全部', '工作日', '非工作日'], disabled=cluster_view, key='day_type')
+        min_value=pd.Timestamp('2017-05-01').date(), max_value=pd.Timestamp('2017-08-31').date(), disabled=cluster_view or dynamic_view, key='dates')
+    day_type = st.selectbox('日期类型', ['全部', '工作日', '非工作日'], disabled=cluster_view or dynamic_view, key='day_type')
     selected = st.multiselect('选择站点（留空为全部）', stations.station_id.tolist(),
         format_func=lambda x: f'{names[x]} · {x}', disabled=fixed_network, key='stations', placeholder='全部302站')
     direction_label = st.selectbox('客流方向', ['进站', '出站'] + (['进出总量'] if page == '站点空间' else []),
@@ -141,17 +157,24 @@ context = f'{dates[0]} — {dates[1]} · {day_type} · {scope} · {a.FLOW_NAMES[
 descriptions = {
     '项目概览': ('客流总览', '先看规模和每日变化，再进入专题分析。'),
     '时间规律': ('高峰时段与日期差异', '比较工作日、非工作日和逐日小时分布。'),
-    '站点空间': ('站点客流与空间分布', '在地图定位高客流站，并按统一口径排名。'),
+    '站点空间': ('站点客流与空间分布', '查看站点排名，或播放10分钟边流量变化。'),
     '出行模式': ('进出方向与出行构成', '查看早晚方向、三类行程和站点分组。'),
     '天气关联': ('天气与全网客流', '按日期类型比较温度、降雨和进站量。'),
     '数据质量与说明': ('数据质量与统计口径', '查看异常日期、字段含义和处理结果。')}
 title, intro = descriptions[page]
+meta_items = ['9 个有效日', '349 条邻接边', '离线运行'] if dynamic_view else ['117 个有效日', '302 个站点', '离线运行']
+meta_html = ''.join(f'<span>{html.escape(item)}</span>' for item in meta_items)
 st.html(f'''<section class="page-head"><div class="head-row"><div class="head-main">
 <div class="page-index">{page_numbers[page]}</div><div><h1>{html.escape(title)}</h1><p>{html.escape(intro)}</p></div>
-</div><div class="head-meta"><span>117 个有效日</span><span>302 个站点</span><span>离线运行</span></div></div></section>''')
-context_text = context if not cluster_view else '站点聚类使用四个月固定结果；日期和方向筛选不改变分组。'
+</div><div class="head-meta">{meta_html}</div></div></section>''')
+if dynamic_view:
+    context_text = '2017-05-01 — 2017-05-12 · 9个有效日 · 10分钟边流量 · 固定附件范围'
+elif cluster_view:
+    context_text = '站点聚类使用四个月固定结果；日期和方向筛选不改变分组。'
+else:
+    context_text = context
 st.html(f'<div class="context-line"><b>当前范围</b><span>{html.escape(context_text)}</span></div>')
-if h.empty and page != '数据质量与说明' and not cluster_view:
+if h.empty and page != '数据质量与说明' and not cluster_view and not dynamic_view:
     st.warning('当前选择没有有效数据。六个计数缺损日已排除，请扩大日期范围或改选其他日期。')
     st.stop()
 
@@ -161,7 +184,7 @@ if page == '项目概览':
     st.subheader('选择分析功能')
     shortcuts = [
         ('时间规律', '高峰 · 热力图', 'quick_time'),
-        ('站点空间', '地图 · 排名', 'quick_station'),
+        ('站点空间', '地图 · 排名 · 动画', 'quick_station'),
         ('出行模式', '方向 · 构成 · 聚类', 'quick_mode'),
         ('天气关联', '相关 · 雨日比较', 'quick_weather'),
         ('数据质量与说明', '异常 · 字段 · 来源', 'quick_quality'),
@@ -218,19 +241,29 @@ elif page == '时间规律':
     table_export(profile, 'time_profile')
 
 elif page == '站点空间':
-    ranking = a.station_ranking(d, direction).merge(stations[['station_id', 'name']], on='station_id', validate='one_to_one')
-    left, right = st.columns([1.25, 1])
-    with left:
-        show_plot(c.station_map(stations, ranking, selected, title=f'站点地理图 · {a.FLOW_NAMES[direction]}'), 'station_map')
-        st.caption('使用发布方经纬度及邻接关系绘制，无在线底图；连线不代表精确轨道。坐标参考系未由发布方声明。')
-    with right:
-        top = ranking.head(20).sort_values('value')
-        fig = c.bar(top, 'value', 'name', title='日均客流前20站', orientation='h')
-        fig.update_layout(height=535, yaxis_title=None, xaxis_title='日均人次')
-        show_plot(fig, 'station_ranking')
-    top = ranking.iloc[0]
-    insight(f'当前范围中，{top["name"]}（{int(top.station_id)}）日均{top.value:,.0f}人次，排名第1。排名统一使用{int(top.days)}个有效日期；站点规模不能直接推断列车满载或拥挤程度。')
-    table_export(ranking, 'station_ranking_data')
+    space_view = st.segmented_control('空间视图', ['站点总览', '10分钟动画'], default='站点总览',
+                                      key='space_view', selection_mode='single')
+    # 控件切换后重跑，使侧栏禁用状态和页头范围同步更新。
+    if (space_view == '10分钟动画') != dynamic_view:
+        st.rerun()
+    if dynamic_view:
+        components.html(load_metro_map_html(), height=760, scrolling=False)
+        insight('附件覆盖2017年5月1日至12日。排除5月4日、8日和9日三个计数缺损日后，动画展示9天。边流量是附件中的预生成结果，本项目未重新估计；颜色和线宽表示相对强度，边流量合计不等同于去重乘客人数。')
+        st.caption('地图使用发布方站点坐标和邻接边，无在线底图。可切换日期、播放或暂停、逐时段查看，并调整播放速度。')
+    else:
+        ranking = a.station_ranking(d, direction).merge(stations[['station_id', 'name']], on='station_id', validate='one_to_one')
+        left, right = st.columns([1.25, 1])
+        with left:
+            show_plot(c.station_map(stations, ranking, selected, title=f'站点地理图 · {a.FLOW_NAMES[direction]}'), 'station_map')
+            st.caption('使用发布方经纬度及邻接关系绘制，无在线底图；连线不代表精确轨道。坐标参考系未由发布方声明。')
+        with right:
+            top = ranking.head(20).sort_values('value')
+            fig = c.bar(top, 'value', 'name', title='日均客流前20站', orientation='h')
+            fig.update_layout(height=535, yaxis_title=None, xaxis_title='日均人次')
+            show_plot(fig, 'station_ranking')
+        top = ranking.iloc[0]
+        insight(f'当前范围中，{top["name"]}（{int(top.station_id)}）日均{top.value:,.0f}人次，排名第1。排名统一使用{int(top.days)}个有效日期；站点规模不能直接推断列车满载或拥挤程度。')
+        table_export(ranking, 'station_ranking_data')
 
 elif page == '出行模式':
     mode = st.segmented_control('模式视图', ['进出方向', '出行构成', '站点聚类'], default='进出方向', key='mode', selection_mode='single')

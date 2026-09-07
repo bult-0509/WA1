@@ -17,3 +17,4 @@ docs/ai-process/本科项目精简反馈.png
 !.env.example
 .streamlit/secrets.toml
 运行记录/
+/changes/

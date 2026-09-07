@@ -1,4 +1,6 @@
 """用Streamlit实际执行各页及关键筛选；浏览器视觉检查另行进行。"""
+import json
+import re
 import unittest
 from pathlib import Path
 from streamlit.testing.v1 import AppTest
@@ -20,6 +22,11 @@ class AppPages(unittest.TestCase):
             app.session_state['mode']=mode
             app.run()
             self.assertFalse(list(app.exception),f'{mode}: {app.exception}')
+        app=AppTest.from_file(str(APP),default_timeout=60)
+        app.session_state['page']='站点空间'
+        app.session_state['space_view']='10分钟动画'
+        app.run()
+        self.assertFalse(list(app.exception),f'10分钟动画: {app.exception}')
 
     def test_station_and_empty_filter(self):
         from datetime import date
@@ -34,5 +41,37 @@ class AppPages(unittest.TestCase):
         app.button(key='quick_station').click().run()
         self.assertFalse(list(app.exception))
         self.assertEqual(app.session_state['page'],'站点空间')
+
+
+class MetroMapAssets(unittest.TestCase):
+    def test_dynamic_map_bundle_is_offline_and_complete(self):
+        base=APP.parent/'static'/'metro_map'
+        required=['metro_map.html','stations.js','edges.js','data_flow_edges.js',
+                  'vendor/leaflet/leaflet.css','vendor/leaflet/leaflet.js','vendor/leaflet/LICENSE']
+        for relative in required:
+            path=base/relative
+            self.assertTrue(path.is_file(),relative)
+            self.assertGreater(path.stat().st_size,0,relative)
+
+        html=(base/'metro_map.html').read_text(encoding='utf-8')
+        self.assertNotIn('http://',html)
+        self.assertNotIn('https://',html)
+        for reference in ['vendor/leaflet/leaflet.css','vendor/leaflet/leaflet.js',
+                          'stations.js','edges.js','data_flow_edges.js']:
+            self.assertIn(reference,html)
+
+        def load_var(filename,var_name):
+            text=(base/filename).read_text(encoding='utf-8')
+            match=re.search(rf'var\s+{var_name}\s*=\s*(.*);\s*$',text,re.S)
+            self.assertIsNotNone(match,filename)
+            return json.loads(match.group(1))
+
+        self.assertEqual(len(load_var('stations.js','STATIONS')),302)
+        self.assertEqual(len(load_var('edges.js','EDGES')),349)
+        edge_flow=load_var('data_flow_edges.js','EDGE_FLOW')
+        self.assertEqual(len(edge_flow),12)
+        self.assertEqual(set(edge_flow)-{'20170504','20170508','20170509'},
+                         {'20170501','20170502','20170503','20170505','20170506',
+                          '20170507','20170510','20170511','20170512'})
 
 if __name__=='__main__':unittest.main()

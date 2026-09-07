@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>上海地铁动态客流图 · MetroFlow</title>
+<link rel="stylesheet" href="vendor/leaflet/leaflet.css"/>
+<style>
+  @font-face { font-family: "Alimama FangYuanTi VF"; src: url("../fonts/AlimamaFangYuanTiVF-Thin.woff2") format("woff2"); font-style: normal; font-weight: 100 900; font-display: swap; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 100%; height: 100%; overflow: hidden; font-family: "Alimama FangYuanTi VF",'Microsoft YaHei',Arial,sans-serif; background:#0b1220; color:#e8eef7; }
+  button, select, input { font-family: inherit; }
+  button:focus-visible, select:focus-visible, input:focus-visible { outline: 3px solid #78c2bc; outline-offset: 2px; }
+  #map { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .leaflet-container { background: #10192c; }
+
+  /* 顶栏 */
+  #topbar {
+    position: absolute; top: 12px; left: 50%; transform: translateX(-50%);
+    background: rgba(13,22,40,0.92); border: 1px solid rgba(120,160,255,0.28);
+    border-radius: 14px; padding: 10px 18px; display: flex; align-items: center; gap: 14px;
+    z-index: 1000; backdrop-filter: blur(6px); box-shadow: 0 4px 24px rgba(0,0,0,0.55);
+    flex-wrap: wrap; justify-content: center; max-width: 96vw;
+  }
+  #topbar .title { font-size: 15px; font-weight: 600; letter-spacing: .5px; white-space: nowrap; }
+  #topbar .title b { color: #58b6ff; }
+  #dateSel { background: #16233f; color: #e8eef7; border: 1px solid #2c3e63; border-radius: 8px; padding: 6px 10px; font-size: 13px; }
+  #dateSel:focus { outline: none; border-color: #58b6ff; }
+  .btn {
+    background: #1b2c4f; color: #e8eef7; border: 1px solid #2c3e63; border-radius: 8px;
+    padding: 6px 12px; font-size: 13px; cursor: pointer; transition: all .15s; min-width: 44px;
+  }
+  .btn:hover { background: #26406f; }
+  .btn.play { background: #0d7bd4; border-color: #2aa0ff; }
+  .btn.play:hover { background: #1090f0; }
+  #clock { font-size: 15px; font-weight: 600; color: #ffd76a; min-width: 74px; text-align: center; font-variant-numeric: tabular-nums; }
+  #speed { width: 90px; }
+
+  /* 图例面板 */
+  #legend {
+    position: absolute; bottom: 86px; right: 14px; z-index: 1000;
+    background: rgba(13,22,40,0.92); border: 1px solid rgba(120,160,255,0.26);
+    border-radius: 12px; padding: 12px 14px; font-size: 12px; line-height: 1.8;
+    width: 208px; box-shadow: 0 4px 24px rgba(0,0,0,0.5); backdrop-filter: blur(6px);
+  }
+  #legend .t { font-weight: 600; margin-bottom: 6px; color: #dfe8f7; }
+  #legend .bar { height: 12px; border-radius: 6px; margin: 4px 0 2px; }
+  #legend .labels { display: flex; justify-content: space-between; font-size: 10.5px; color: #9fb4d8; margin-bottom: 6px; }
+  #legend .row { display: flex; align-items: center; gap: 8px; font-size: 11.5px; color: #c6d2e8; }
+  #legend .sw { width: 14px; height: 14px; border-radius: 3px; flex-shrink: 0; }
+  #legend .n { color: #ffd76a; font-weight: 600; margin-left: auto; }
+
+  /* 底部信息 + 时间轴 */
+  #panel {
+    position: absolute; bottom: 16px; left: 14px; z-index: 1000;
+    background: rgba(13,22,40,0.92); border: 1px solid rgba(120,160,255,0.26);
+    border-radius: 12px; padding: 10px 14px; font-size: 12.5px; line-height: 1.75;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.5); backdrop-filter: blur(6px);
+  }
+  #panel .k { color: #8fa3c8; }
+  #panel .v { color: #fff; font-weight: 600; }
+  #timeline {
+    position: absolute; bottom: 16px; left: 50%; transform: translateX(-50%);
+    background: rgba(13,22,40,0.92); border: 1px solid rgba(120,160,255,0.26);
+    border-radius: 12px; padding: 10px 18px 6px; z-index: 1000; backdrop-filter: blur(6px);
+    width: min(640px, 96vw); box-shadow: 0 4px 24px rgba(0,0,0,0.5);
+  }
+  #timeline .track { position: relative; height: 26px; }
+  #slider { width: 100%; accent-color: #2aa0ff; height: 6px; cursor: pointer; }
+  #hourLabels { display: flex; justify-content: space-between; font-size: 10.5px; color: #7d91b8; margin-top: 2px; }
+  #tooltip {
+    position: absolute; pointer-events: none; background: rgba(8,14,28,0.95);
+    border: 1px solid rgba(120,160,255,0.45); border-radius: 8px; padding: 6px 10px;
+    font-size: 12px; color: #e8eef7; display: none; z-index: 2000; max-width: 260px; line-height: 1.55;
+  }
+  #loading { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; background: #0b1220; z-index: 3000; color: #9fb4d8; font-size: 14px; gap: 14px; }
+  .spinner { width: 36px; height: 36px; border: 3px solid #24375c; border-top-color: #58b6ff; border-radius: 50%; animation: spin 1s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  @media (max-width: 640px) {
+    #topbar { gap: 8px; padding: 8px 10px; }
+    #legend { width: 180px; right: 8px; bottom: 90px; }
+    #panel { max-width: 200px; font-size: 11.5px; bottom: 84px; }
+    #timeline { bottom: 10px; width: 96vw; }
+    #clock { min-width: 60px; font-size: 13px; }
+  }
+</style>
+</head>
+<body>
+<div id="map"></div>
+
+<div id="topbar">
+  <span class="title">上海地铁 <b>10分钟边流量</b> · 2017</span>
+  <label for="dateSel" style="font-size:12px;color:#9fb4d8;">日期</label>
+  <select id="dateSel" aria-label="选择日期"></select>
+  <button class="btn play" id="btnPlay">播放</button>
+  <span id="clock">06:00</span>
+  <button class="btn" id="btnPrev">上一时段</button>
+  <button class="btn" id="btnNext">下一时段</button>
+  <label for="speed" style="font-size:12px;color:#9fb4d8;">速度
+    <input type="range" id="speed" min="1" max="12" value="6" aria-label="播放速度">
+  </label>
+</div>
+
+<div id="legend">
+  <div class="t">边客流强度（人次/10分钟）</div>
+  <div class="bar" id="legendBar"></div>
+  <div class="labels"><span id="lMin">0</span><span id="lMid">—</span><span id="lMax">—</span></div>
+  <div class="row"><span class="sw" style="background:#175ddc;"></span>低客流<span class="n" id="n1">0</span></div>
+  <div class="row"><span class="sw" style="background:#0ea5c9;"></span>较低<span class="n" id="n2">0</span></div>
+  <div class="row"><span class="sw" style="background:#16c09b;"></span>中等<span class="n" id="n3">0</span></div>
+  <div class="row"><span class="sw" style="background:#ffd400;"></span>较高<span class="n" id="n4">0</span></div>
+  <div class="row"><span class="sw" style="background:#ff5a3c;"></span>高客流<span class="n" id="n5">0</span></div>
+  <div style="color:#8fa3c8;margin-top:6px;font-size:11px;">颜色与线宽表示边流量强度</div>
+</div>
+
+<div id="panel">
+  <div><span class="k">当前时刻：</span><span class="v" id="curTime">—</span></div>
+  <div><span class="k">边流量合计：</span><span class="v" id="curFlow">—</span> 人次</div>
+  <div><span class="k">有流量边数：</span><span class="v" id="curEdge">—</span></div>
+  <div><span class="k">最高单边客流：</span><span class="v" id="curMax">—</span></div>
+</div>
+
+<div id="timeline">
+  <div class="track"><input type="range" id="slider" min="0" max="101" step="1" value="0"></div>
+  <div id="hourLabels"></div>
+</div>
+
+<div id="tooltip"></div>
+<div id="loading"><div class="spinner"></div><div id="loadMsg">正在加载客流数据…</div></div>
+
+<script src="vendor/leaflet/leaflet.js"></script>
+<script src="stations.js"></script>
+<script src="edges.js"></script>
+<script src="data_flow_edges.js"></script>
+<script>
+(function () {
+  'use strict';
+  var map = L.map('map', { zoomControl: true, preferCanvas: true, attributionControl: false }).setView([31.215, 121.44], 11);
+
+  // 离线演示不加载网络底图，仅显示站点坐标和邻接边。
+
+  var loading = document.getElementById('loading');
+  var loadMsg = document.getElementById('loadMsg');
+  var tooltip = document.getElementById('tooltip');
+  var slider = document.getElementById('slider');
+  var btnPlay = document.getElementById('btnPlay');
+  var clockEl = document.getElementById('clock');
+  var dateSel = document.getElementById('dateSel');
+
+  // ---------- 数据 ----------
+  var ST = STATIONS;
+  var ED = EDGES;                       // [[a,b], ...]
+  var EF = EDGE_FLOW;                   // {date: {slot: [[edge_id, flow], ...]}}
+  var SLOTS = 102;                      // 6:00-23:00, 每10分钟
+  // 与主项目一致，明确排除附件范围内的三个计数缺损日。
+  var excludedDates = {'20170504': true, '20170508': true, '20170509': true};
+  var allDates = Object.keys(EF).sort();
+  var dates = allDates.filter(function (d) { return !excludedDates[d]; });
+  var playing = false;
+  var speed = 6;                        // 槽/秒
+  var slot = 0;                         // 0..101
+  var dateIdx = 0;
+  var frameAcc = 0;
+  var lastTs = 0;
+
+  var stationById = {};
+  ST.forEach(function (s) { stationById[s.id] = s; });
+
+  // ---------- 边/站绘制 ----------
+  var LINE_COLORS = {1:'#e4002b',2:'#8fd400',3:'#ffd100',4:'#5e2e91',5:'#9b7bbd',6:'#e4007f',7:'#fa9d2e',8:'#00a0e9',9:'#8fc31f',10:'#c9a37e',11:'#5c2d91',12:'#00716c',13:'#e993c2',16:'#98d1e0',20:'#b0b0b0'};
+
+  // 边图层: L.polyline 数组, canvas renderer
+  var edgeLayers = [];
+  var edgeLine = [];
+  ED.forEach(function (pair, eid) {
+    var a = stationById[pair[0]], b = stationById[pair[1]];
+    if (!a || !b) { edgeLine.push(null); return; }
+    var line = L.polyline([[a.lat, a.lon], [b.lat, b.lon]], {
+      color: '#3a4a6a', weight: 2, opacity: 0.85, renderer: L.canvas()
+    });
+    line.addTo(map);
+    edgeLine.push(line);
+  });
+
+  // 站点: circleMarker
+  var stLayers = [];
+  ST.forEach(function (s) {
+    var r = s.nb.length >= 3 ? 5 : 3.2;
+    var m = L.circleMarker([s.lat, s.lon], {
+      radius: r, color: '#0b1220', weight: 1,
+      fillColor: '#dfe8f7', fillOpacity: 0.92
+    }).addTo(map);
+    m.bindTooltip('<b>' + s.name + '</b><br>ID ' + s.id, { direction: 'top', offset: [0, -6], opacity: 0.95 });
+    stLayers.push(m);
+  });
+
+  // ---------- 颜色映射 (渐变) ----------
+  // 全局边流量最大值
+  var gMax = 1;
+  function computeGlobalMax() {
+    var m = 1;
+    dates.forEach(function (d) {
+      var slots = EF[d] || {};
+      Object.keys(slots).forEach(function (s) {
+        slots[s].forEach(function (t) { if (t[1] > m) m = t[1]; });
+      });
+    });
+    gMax = m;
+  }
+
+  // 色带: 深蓝 -> 蓝 -> 青 -> 绿 -> 黄 -> 红 (连续渐变)
+  var STOPS = [
+    [0.00, 23, 93, 220],   // 深蓝 #175ddc
+    [0.25, 14, 165, 201],  // 蓝青 #0ea5c9
+    [0.45, 22, 192, 155],  // 绿 #16c09b
+    [0.65, 130, 200, 90],  // 黄绿
+    [0.82, 255, 212, 0],   // 黄 #ffd400
+    [1.00, 255, 90, 60]    // 红 #ff5a3c
+  ];
+  function flowColor(t) {
+    t = Math.max(0, Math.min(1, t));
+    var i = 0;
+    while (i < STOPS.length - 2 && t > STOPS[i + 1][0]) i++;
+    var a = STOPS[i], b = STOPS[i + 1];
+    var u = (t - a[0]) / Math.max(1e-9, (b[0] - a[0]));
+    return [Math.round(a[1] + (b[1] - a[1]) * u), Math.round(a[2] + (b[2] - a[2]) * u), Math.round(a[3] + (b[3] - a[3]) * u)];
+  }
+  function css(c, alpha) { return 'rgba(' + c[0] + ',' + c[1] + ',' + c[2] + ',' + (alpha == null ? 0.9 : alpha) + ')'; }
+
+  // 图例刻度 (分位数)
+  var q1 = 0, q2 = 0, q3 = 0, q4 = 0;
+  function computeQuantiles() {
+    var vals = [];
+    dates.forEach(function (d) {
+      var slots = EF[d] || {};
+      Object.keys(slots).forEach(function (s) { slots[s].forEach(function (t) { vals.push(t[1]); }); });
+    });
+    vals.sort(function (a, b) { return a - b; });
+    function q(p) { return vals[Math.min(vals.length - 1, Math.floor(vals.length * p))]; }
+    q1 = q(0.30); q2 = q(0.55); q3 = q(0.75); q4 = q(0.90);
+    // 图例区间
+    document.getElementById('n1').textContent = '<' + q1.toLocaleString();
+    document.getElementById('n2').textContent = q1.toLocaleString() + '–' + q2.toLocaleString();
+    document.getElementById('n3').textContent = q2.toLocaleString() + '–' + q3.toLocaleString();
+    document.getElementById('n4').textContent = q3.toLocaleString() + '–' + q4.toLocaleString();
+    document.getElementById('n5').textContent = '>' + q4.toLocaleString();
+    document.getElementById('lMin').textContent = '0';
+    document.getElementById('lMid').textContent = q2.toLocaleString();
+    document.getElementById('lMax').textContent = gMax.toLocaleString();
+    // 渐变条
+    var bar = document.getElementById('legendBar');
+    bar.style.background = 'linear-gradient(90deg,' + [0,0.25,0.45,0.65,0.82,1].map(function (t) {
+      var c = flowColor(t); return 'rgb(' + c[0] + ',' + c[1] + ',' + c[2] + ')';
+    }).join(',') + ')';
+  }
+
+  // ---------- 绘制当前槽 ----------
+  function currentDate() { return dates[dateIdx]; }
+
+  function drawSlot() {
+    var d = currentDate();
+    var slots = (EF[d] || {});
+    var frame = slots[String(slot)] || [];
+    var total = 0, mx = 0, activeEdges = 0;
+    frame.forEach(function (t) { total += t[1]; if (t[1] > mx) mx = t[1]; });
+
+    document.getElementById('curTime').textContent = fmtDate(d) + '  ' + fmtSlot(slot);
+    document.getElementById('curFlow').textContent = total.toLocaleString();
+    document.getElementById('curEdge').textContent = frame.length;
+    document.getElementById('curMax').textContent = mx.toLocaleString();
+    clockEl.textContent = fmtSlot(slot).slice(0, 5);
+
+    // 更新边
+    var flowOfEdge = {};
+    frame.forEach(function (t) { flowOfEdge[t[0]] = t[1]; });
+    edgeLine.forEach(function (line, eid) {
+      if (!line) return;
+      var f = flowOfEdge[eid] || 0;
+      if (f <= 0) {
+        line.setStyle({ color: '#33405c', weight: 1.4, opacity: 0.5 });
+        return;
+      }
+      var t = Math.pow(f / gMax, 0.5);
+      var c = flowColor(t);
+      var w = 1.5 + 6.5 * t;
+      line.setStyle({ color: css(c, 0.95), weight: w, opacity: 0.95 });
+    });
+
+    // 站点脉冲: 入站/出站总流量
+    var stFlow = {};
+    frame.forEach(function (t) {
+      var e = ED[t[0]];
+      if (!e) return;
+      stFlow[e[0]] = (stFlow[e[0]] || 0) + t[1];
+      stFlow[e[1]] = (stFlow[e[1]] || 0) + t[1];
+    });
+    stLayers.forEach(function (m, i) {
+      var s = ST[i];
+      var f = stFlow[s.id] || 0;
+      var base = s.nb.length >= 3 ? 5 : 3.2;
+      var r = f > 0 ? base + 4.5 * Math.pow(f / gMax, 0.5) : base;
+      m.setStyle({
+        radius: r,
+        fillColor: f > 0 ? css(flowColor(Math.pow(f / gMax, 0.5))) : '#dfe8f7',
+        fillOpacity: f > 0 ? 0.95 : 0.9
+      });
+    });
+  }
+
+  function fmtDate(d) { return d.slice(0, 4) + '-' + d.slice(4, 6) + '-' + d.slice(6, 8); }
+  function fmtSlot(s) {
+    var mins = 6 * 60 + s * 10;
+    var h = Math.floor(mins / 60), m = mins % 60;
+    return String(h).padStart(2, '0') + ':' + String(m).padStart(2, '0');
+  }
+
+  // ---------- 动画循环 ----------
+  function tick(ts) {
+    var dt = ts - lastTs;
+    lastTs = ts;
+    var changed = false;
+    if (playing && dt > 0) {
+      frameAcc += dt / 1000 * speed;
+      while (frameAcc >= 1) {
+        frameAcc -= 1;
+        slot += 1;
+        changed = true;
+        if (slot >= SLOTS) {
+          slot = 0;
+          dateIdx = (dateIdx + 1) % dates.length;
+          dateSel.value = dates[dateIdx];
+        }
+        slider.value = slot;
+      }
+    }
+    if (changed) drawSlot();
+    requestAnimationFrame(tick);
+  }
+
+  // ---------- 交互 ----------
+  function fillDates() {
+    dates.forEach(function (d) {
+      var op = document.createElement('option');
+      op.value = d;
+      op.textContent = fmtDate(d);
+      dateSel.appendChild(op);
+    });
+    dateSel.value = dates[0];
+  }
+  dateSel.addEventListener('change', function () {
+    dateIdx = dates.indexOf(dateSel.value);
+    if (dateIdx < 0) dateIdx = 0;
+    slot = 0; slider.value = 0; frameAcc = 0;
+    drawSlot();
+  });
+  slider.addEventListener('input', function () { slot = parseInt(slider.value, 10); frameAcc = 0; drawSlot(); });
+  btnPlay.addEventListener('click', function () {
+    playing = !playing;
+    btnPlay.textContent = playing ? '暂停' : '播放';
+  });
+  document.getElementById('btnPrev').addEventListener('click', function () { slot = (slot + SLOTS - 1) % SLOTS; slider.value = slot; frameAcc = 0; drawSlot(); });
+  document.getElementById('btnNext').addEventListener('click', function () { slot = (slot + 1) % SLOTS; slider.value = slot; frameAcc = 0; drawSlot(); });
+  document.getElementById('speed').addEventListener('input', function (e) { speed = parseInt(e.target.value, 10); });
+
+  // 时间轴刻度
+  var hl = document.getElementById('hourLabels');
+  for (var h = 6; h <= 23; h++) {
+    var s = document.createElement('span');
+    s.textContent = String(h).padStart(2, '0');
+    hl.appendChild(s);
+  }
+
+  // ---------- 启动 ----------
+  function boot() {
+    if (typeof EDGE_FLOW === 'undefined' || !EDGE_FLOW || Object.keys(EDGE_FLOW).length === 0) {
+      loadMsg.textContent = '错误: data_flow_edges.js 未加载或为空';
+      loading.style.display = 'flex';
+      return;
+    }
+    fillDates();
+    computeGlobalMax();
+    computeQuantiles();
+    loading.style.display = 'none';
+    drawSlot();
+    requestAnimationFrame(tick);
+  }
+  boot();
+})();
+</script>
+</body>
+</html>
