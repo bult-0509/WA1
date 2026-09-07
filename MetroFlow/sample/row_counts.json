@@ -1,0 +1,14 @@
+{
+  "metroData_InOutFlow.csv": {
+    "total_rows": 3788892,
+    "sample_rows": 378889,
+    "bytes": 217442845,
+    "mtime_ns": 1744182914000000000
+  },
+  "metroData_ODFlow.csv": {
+    "total_rows": 267318222,
+    "sample_rows": 26731822,
+    "bytes": 12103814516,
+    "mtime_ns": 1744183182000000000
+  }
+}

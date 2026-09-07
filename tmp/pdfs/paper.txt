@@ -1,0 +1,568 @@
+PAGE 1
+1
+Scientific Data |         (2025) 12:1061  | https://doi.org/10.1038/s41597-025-05416-8
+www.nature.com/scientificdata
+Human Mobility Datasets in the 
+Complex Metro System of Shanghai
+Peiyan Sun   1,2,4, Jinming Yang1,2,4, Zongyuan Huang1,2, Shaoyu Huang1,2, Shengyuan Xu1,2, 
+Weipeng Wang1,2, Wenxuan Guo   1,2, Yuting Feng   1,2, Xi Zhai3, Tao Yang3, Xiaokang Yang1, 
+Yaohui Jin1,2 ✉ & Yanyan Xu   1,2 ✉
+The growing role of metro systems in urban mobility calls for high-quality metro transit datasets. 
+Derived from over 700 million smart card records, an open-sourced, city-scale metro flow dataset 
+was constructed, covering the period of May-August 2017 and 302 metro stations in Shanghai, China. 
+The in-out flow counts of each station and OD flow between stations were offered at a 10-minute 
+temporal resolution. By leveraging the mobility patterns of each passenger, metro flows were 
+categorized into commuting flows, home-based-other flows, and none-home-based flows, providing 
+a more comprehensive perspective towards urban mobility dynamics. Supplemental metadata, 
+including station attributes, network topology, and meteorological records further support potential 
+applications. This city-scale metro flow dataset could be utilized in advancing research in transportation 
+modeling, spatio-temporal data mining, and urban mobility analysis.
+Background & Summary
+Human mobility, the spatial-temporal movement patterns of people, provides fundamental insights for urban 
+science and city governance1. It supports a wide range of applications including transportation optimization2,3, 
+city planning4,5, epidemic modeling6,7, and environmental impact assessment8–10. Among various modes of 
+urban transportation, subway systems stand out for their high travel efficiency, large passenger capacity, and low 
+environmental impact. By 2020, more than 190 metro systems had been established globally. Around 20%–50% 
+of commuters travel by subway every day in major metropolitan areas such as Paris, London, and Tokyo11.
+The increasingly important role of subway system in urban transportation has sparked numerous studies 
+leveraging metro transit data, which could be broadly categorized into passenger behavior analysis, opera-
+tion optimization, and policy applications12. Utilizing smart card data from Seoul, researchers proposed an 
+agent-based transportation simulator to analyze waiting time and transfer volumes across different metro sta-
+tions13. Passengers’ trip chains could be identified and clustered based on spatiotemporal similarities14. Mobility 
+patterns of passengers extracted from the transit data offer valuable guidance for optimizing system operations, 
+such as minimizing total waiting time15,16 and reducing operation cost17,18. At a broader scale, metro transit data 
+sheds light on city spatial structure, urbanization process, and local policy decisions19,20. Furthermore, the prev-
+alence of artificial intelligence and big data technologies facilitated the development of data-driven metro flow 
+prediction models21–23, which rely heavily on metro transit data.
+Despite the growing body of research leveraging metro transit data, high-quality datasets accessible to the 
+broader research community remain scarce. The Metropolitan Transportation Authority (MTA), operator of 
+public transportation in the New York City metropolitan area, has released a series of subway ridership datasets 
+spanning five years and covering more than 400 metro stations. The MTA Subway Hourly Ridership Dataset 
+(https://data.ny.gov/Transportation/MTA-Subway-Hourly-Ridership-2020-2024/wujg-7c2s/about_data) 
+records the number of riders entering each station on an hourly basis starting from 2020, with the most recent 
+update on March 5, 2025. The MTA Subway Origin-Destination Ridership Dataset (https://data.ny.gov/browse?t
+ags=origin-destination&sortBy=relevance&pageSize=20) estimates the number of riders that traveled between 
+specific origin-destination pairs for each hour of day and day of the week, averaged over a calendar month. 
+Though monthly-averaged OD flow provided more detailed mobility patterns than ridership, its accuracy is 
+1MoE Key Laboratory of Artificial Intelligence, AI Institute, Shanghai Jiao Tong University, Shanghai, 200240, 
+China. 2Data-Driven Management Decision Making Lab, Shanghai Jiao Tong University, Shanghai, 200240, China. 
+3Shanghai Transportation Information Center, Shanghai Urban-Rural Construction and Transportation Development 
+Research Institute, Shanghai, 200032, China. 4These authors contributed equally: Peiyan Sun, Jinming Yang. ✉e-mail: 
+jinyh@sjtu.edu.cn; yanyanxu@sjtu.edu.cn
+Data Descriptor
+OPEN
+
+PAGE 2
+2
+Scientific Data |         (2025) 12:1061  | https://doi.org/10.1038/s41597-025-05416-8
+www.nature.com/scientificdata
+www.nature.com/scientificdata/
+limited because trip destinations are inferred based on users’ subsequent entering swipes. The MTA Subway 
+Turnstile Usage Dataset (https://data.ny.gov/browse?q=MTA+Subway+Turnstile+Usage+Data&sortBy=rel-
+evance&page=1&pageSize=20) further refines the hourly ridership dataset by providing the entry and exit 
+counts for each turnstile. Beyond the MTA Subway Dataset, few datasets rival these in terms of scale, standardi-
+zation, and maintenance frequency. SHMetro and HZMetro (https://lingboliu.com/Dataset.html) are two data-
+sets first proposed by Linbo Liu23 and become benchmarks for metro flow prediction task24,25. SHMetro records 
+the inflow and outflow of 288 metro stations in Shanghai from July to September 2016, while HZMetro captures 
+similar data for 80 metro stations in Hangzhou from January 1 to January 25, 2019. Both datasets feature a 
+15-minute temporal resolution. However, they are primarily designed for time-series forecasting tasks, and the 
+absence of station names or precise locations creates discrepancies with real-world facilities.
+In light of the dataset deficit, we compiled a large-scale, high-resolution, information-rich metro flow data-
+set26 to capture the dynamic mobility pattern in Shanghai’s subway system. As a global financial hub and a major 
+center for commerce, technology, and culture, Shanghai is located on the eastern coast of China, spanning 6,340.5 
+square kilometers with a population of 24.87 million. In this work, we extracted over 736.8 million metro trip 
+records from the smart card data collected by the Automatic Fare Collection (AFC) system, covering 302 metro 
+stations, extending from May 1st to August 31st, 2017. By leveraging personal trajectory data across 19.69 million 
+users, all trips were categorized into commuting trips, home-based-others trips, and none-home-based trips. To 
+enhance privacy protection while effectively illustrating mobility patterns, we aggregated trips into station-level 
+inflow/outflow counts and origin-destination (OD) pair flows, all at a 10-minute temporal resolution.
+We summarized the key contributions of this work as follows:
+• 
+We compiled and released a large-scale metro flow dataset capturing the mobility patterns of Shanghai’s sub-
+way system across 302 metro stations over four months. Additionally, we collected station attributes, network 
+topology, and weather data in our data repository.
+• 
+By analyzing individuals’ trajectories, we distinguished commuting trips and home-based-others trips from 
+none-home-based trips, offering more comprehensive insights and detailed data for related studies.
+• 
+We conducted systematic technical validations, including integrity checks, correlation analysis, and compar-
+isons with a reference dataset, to verify the dataset’s robustness and accuracy.
+Methods
+In this section, we systematically described the data organization process and the specific techniques employed 
+in its implementation. We begin with a general overview, followed by a detailed discussion about data acquisi-
+tion, data cleaning, and trip labeling.
+As illustrated in Fig. 1, the data organization workflow begins with transaction records generated by the auto-
+matic fare collection (AFC) system. A subway trip was completed when a passenger tapped their card at both 
+entry and exit points. The original smart card data spans from May 1st to August 31st, 2017, covering a total of 
+123 days. Given that the typical operation hours of the Shanghai subway system are from 6 A.M. to 11 P.M., we 
+segmented each day into 102 discrete 10-minute intervals. During each interval, entry counts, exit counts, and 
+origin-destination flow were aggregated across 302 stations, with OD flows aligned by entry time. Figure 2(a) 
+demonstrates the system’s total ridership on workdays and non-workdays. A distinctive pattern on workdays is 
+the morning rush hours (7:00–9:00 A.M.) and evening rush hours (5:00–7:00 P.M.).
+By further analyzing the commuting patterns within daily mobility behaviors, we managed to identify the resi-
+dence station and workplace station for over 67% of smart card users. With this information, we labeled all the trips 
+as commuting trips, home-based-others trips, and none-home-based trips. Figure 2(b) reveals the probability distri-
+bution of travel distances for all kinds of trips. The curve peaks at d = 10, indicating that the typical distance of a sub-
+way trip is around 10 km. Beyond this peak, the probability drops dramatically following an exponential distribution 
+(green line), which is consistent with the truncated power-law tail observed in classical human mobility studies27. 
+The power law fails to fit trips shorter than 10 km due to the prevalence of alternative transportation modes such as 
+buses and bicycles. Interestingly, comparing the proportion of short-distance trips in all kinds of trips, we observed 
+that the none-home-based trips rank first, followed by home-based-others trips and commuting trips, while the 
+pattern is the complete opposite for long-distance trips. Commuting trips exhibit the heaviest tail in the distribution.
+Based on 736.8 million extracted trips, the activity levels of 19.69 million users and the overall busyness of 
+302 metro stations are depicted by their total trip volumes aggregated over the entire period in Fig. 2(c). The 
+travel frequencies of users follow an exponential distribution. The majority of metro stations experienced trip 
+volumes less than 4 million over a total of 123 days, with a few exceptions such as stations located at transporta-
+tion hubs or downtown areas.
+Figure 3 demonstrates our station-level high-resolution metro flow dataset, comparing the in-out passenger 
+flows of five major stations using data from May 1st (a non-workday) and May 2nd (a workday). People’s Square, 
+along with Xujiahui and Lujiazui, is located in the downtown area of Shanghai, combining the functions of a 
+commercial district and a tourist attraction. On the workday, the commuting outflow counts of these three 
+stations peaked at 8 A.M. while inflow counts peaked at 6 P.M., reflecting a clear workplace-driven pattern. 
+In contrast, Xinzhuang Station exhibits distinct morning inflow and evening outflow patterns, revealing its 
+role as a commuter hub on workdays. Consequently, its passenger volumes on non-workdays are significantly 
+lower than those at the other stations. The none-home-based trips take the lead in the flow counts of Hongqiao 
+Railway Stations, which indicates a large proportion of users here are transient populations or intercity travelers. 
+As a key railway hub, Hongqiao Railway Station witnessed significantly lower trip volume on workdays than on 
+non-workdays.
+
+PAGE 3
+3
+Scientific Data |         (2025) 12:1061  | https://doi.org/10.1038/s41597-025-05416-8
+www.nature.com/scientificdata
+www.nature.com/scientificdata/
+Fig. 1  Schematic overview of the study. This study was initiated using smart card transaction data collected 
+through the automatic fare collection (AFC) system. A complete subway trip was determined after inferring 
+the entry time via Gaode API. For each user, the residence and workplace stations were inferred from personal 
+trajectories during commuting time. Then we further labeled trips as commuting trips (C), home-based-others 
+(HBO) trips, and none-home-based (NHB) trips. Finally, these labelled trips were aggregated into inflow, 
+outflow counts, and OD flow counts in a temporal resolution of 10 minutes, with metadata attached.
+Fig. 2  (a) The total ridership of the subway system aggregated by hour for both workdays and non-workdays. 
+Ridership is calculated as the sum of inflow volumes across all metro stations. (b) Distribution of travel 
+distances for different trip types. Four curves composed of various styles of points illustrate the probability 
+distribution of travel distances for all trips, commuting trips, home-based-others trips, and none-home-based 
+trips, respectively. The green dashed line represents the fitted distribution of all trips covering distances greater 
+than 10 km. (c) Visualization of users’ activity level and busyness of metro stations in terms of trip volume.
+
+PAGE 4
+4
+Scientific Data |         (2025) 12:1061  | https://doi.org/10.1038/s41597-025-05416-8
+www.nature.com/scientificdata
+www.nature.com/scientificdata/
+Data acquisition. 
+The raw data, including station attribute data and smart card data, were obtained through 
+the authors’ affiliation with Shanghai Transportation Information Center, covering the transit records of 19.69 
+million users. To ensure privacy protection, all the user IDs had been anonymized before any analysis. Since our 
+released dataset contains only aggregated flow data, no personally identifiable information is disclosed. We have 
+received explicit approval from the Shanghai Transportation Information Center to publish the aggregated data 
+under an open license.
+Some other data involved in this study originates from third parties. The hourly weather data was obtained 
+using the Historical Weather API of Open-meteo (https://open-meteo.com/en/docs/historical-weather-api). 
+The estimated travel time and travel distance between two stations were acquired through Route Planning API 
+2.0 (Metro Mode) of Gaode Maps (https://lbs.amap.com/api/webservice/guide/api/newroute). We also hand-
+crafted a workday calendar according to the 2017 Chinese Government Holiday Announcement (https://www.
+gov.cn/zhengce/content/2016-12/01/content_5141603.htm). All these data are under open license and inte-
+grated into our data repository except estimated travel time and travel distance, which could be accessed by 
+subscribing to the service of Gaode.
+Data cleaning. 
+The original smart card data contains transaction records for all modes of public transpor-
+tation. While preprocessing the data, we selected metro-specific entries and discarded records before 6:00 A.M. 
+or after 11:00 P.M., which accounted for only a negligible portion of the dataset. A key challenge in data cleaning 
+was the absence of the entry time for subway trips. Utilizing estimated travel time obtained via Gaode API, we 
+inferred entry time based on the recorded entry station, exit station, and exit time.
+To improve the reliability of the proposed dataset, anomalous smart card records were excluded by following 
+criteria: 1) We eliminated smart card records that do not constitute a complete trip, specifically those lacking a 
+corresponding tap-in (entry) or tap-out (exit) event; 2) We removed the metro trips with estimated durations 
+shorter than 3 minutes or longer than 5 hours, as they are typically caused by turnstile faults, system errors, or 
+highly atypical travel patterns, rather than normal transit behavior. After data cleaning, the integrity of metro 
+flow dataset was validated in Fig. 4.
+Trip labeling. 
+To better understand the mobility patterns of metro transit dataset, we labeled trips as com-
+muting (C) trips, home-based-others (HBO) trips and none-home-based (NHB) trips, defined as follows:
+• 
+commuting trips: Trips that occur between an individual’s residence station and their workplace station.
+• 
+home-based-others Trips: Trips that originate or terminate at an individual’s residence station but are not 
+commuting trips.
+• 
+none-home-based Trips: Trips that neither originate nor terminate at an individual’s residence station.
+Fig. 3  A demonstration of the metro flow dataset. The charts visualized the in-out flow counts of five major 
+metro stations on May 1st (a non-workday) and May 2nd (a workday) at a temporal resolution of 10 minutes. 
+The multi-colored curves correspond to different flow types.
+
+PAGE 5
+5
+Scientific Data |         (2025) 12:1061  | https://doi.org/10.1038/s41597-025-05416-8
+www.nature.com/scientificdata
+www.nature.com/scientificdata/
+According to the definition above, the key to trip labeling lies in the identification of the residence station and 
+the workplace station for each user derived from their individual trajectory set. Specifically, a residence station 
+pool H and workplace station pool W are maintained for each user. By traversing the trips during morning rush 
+hours and evening rush hours, we assumed the entry stations and exit stations as potential residence stations 
+and workplace stations accordingly, and put them into the pools with repetition. Finally, if a station appears 
+most frequently in H (W) and accounts for more than 40%, it will be recognized as this user’s residence station 
+(workplace station). To summarize, stations frequently used as entry points in the morning and exit points in the 
+evening are more likely to be identified as residence stations, and vice versa, as visualized in Fig. 1.
+Data Records
+Our Metro Dataset, available at figshare26, consists of four components: Station Attributes Data, Inflow and 
+Outflow Data, OD Flow Data, and Meta Data. The Station Attributes Data characterizes each metro station with 
+ID, location (longitude, latitude), name, and neighboring stations which collectively represent the topological 
+structure of the subway network. The Meta Data include a workday calendar to distinguish between workdays 
+and non-workdays, and hourly weather information.
+• 
+Station Attributes Data (stationInfo.csv)
+• 
+Metro Station Inflow and Outflow Data (metroData_InOutFlow.csv)
+• 
+Metro Station Origin-Destination Flow Data (metroData_ODFlow.csv)
+• 
+Meta Data (shanghai_weatherHourly.csv, work_calendar.csv)
+All the data above are stored in CSV (Comma-Separated Values) format with descriptive column headers, 
+which is easy to read and operate across different devices and environments.
+Examples of In-Out flow data and OD flow data are presented in Tables 1, 2, respectively. These two data-
+sets provide continuous metro ridership data for 123 days, starting from 6 A.M. and finishing at 11 P.M. each 
+day. Each row in Table 1 describes the total in-out flow as well as different types of flow at a single metro sta-
+tion within a specific 10-minute interval. The first four columns identify this interval: Date (concatenation of 
+year, month, and day sequentially), Slot (a cumulative count of 10-minute intervals from ‘2017-05-01 06:00’ 
+UTC + 8), and StartTime & EndTime (concatenation of hour, minute, and second sequentially, in UTC + 8). 
+The flow types include IF = total inflow, OF = total outflow, CIF = commuting inflow, HIF = home-based-others 
+inflow, NIF = none-home-based inflow, COF =  commuting outflow, HOF = home-based-others outflow, 
+NOF = none-home-based outflow.
+Similarly, as Table 2 illustrated, each row in OD Data illustrates the flow originating from O-Station 
+and terminating at D-Station, where CFlow = commuting flow, HFlow = home-based-others flow, 
+NFlow = none-home- based flow. The In-Out Flow Data and OD Flow Data represent two complementary per-
+spectives of the same mobility dataset: the former is structured from the viewpoint of individual stations, while 
+the latter provides a more detailed depiction of flows across the entire network.
+Fig. 4  Visualization of total daily ridership ranging from May 1st to August 31st. The accumulated flow counts 
+on May 4th, May 8th, May 9th, June 16th, June 27th, and June 28th are significantly lower than usual, which are 
+masked by orange blocks.
+Date
+Slot
+StartTime
+EndTime
+Station
+IF
+OF
+CIF
+HIF
+NIF
+COF
+HOF
+NOF
+20170501
+0
+060000
+061000
+112
+29
+32
+9
+15
+5
+11
+13
+8
+20170501
+0
+060000
+061000
+113
+142
+102
+40
+51
+51
+30
+41
+31
+20170501
+0
+060000
+061000
+114
+66
+35
+17
+19
+30
+12
+10
+13
+…
+…
+…
+…
+…
+…
+…
+…
+…
+…
+…
+…
+…
+20170831
+12545
+225000
+230000
+2057
+2
+36
+0
+0
+2
+13
+9
+14
+Table 1.  An example of Metro Station Inflow and Outflow Data.
+
+PAGE 6
+6
+Scientific Data |         (2025) 12:1061  | https://doi.org/10.1038/s41597-025-05416-8
+www.nature.com/scientificdata
+www.nature.com/scientificdata/
+Technical Validation
+Once the Metro Flow OD Dataset was constructed, a series of technical validation methods were implemented 
+to verify the quality and reliability of the dataset: (1) Firstly, the integrity of the dataset was checked. (2) The 
+correlation between metro flow data and weather data was analyzed. (3) We compared it with an open-source 
+metro flow dataset from 2015 in Shanghai.
+Data integrity. 
+We provide continuous metro in-out flow data and OD flow data spanning from May 1st 
+to August 31st in 2017, at a time interval of 10 minutes. However, the smart card data were partially missing on 
+certain days, leading to incomplete flow counts. As illustrated in Fig. 4, the daily ridership on May 4th, May 8th, 
+May 9th, June 16th, June 27th, and June 28th is significantly lower than that on other days, accounting for less 
+than 2% of the total observation period.
+Furthermore, by comparing each station’s daily flow counts with its 123-day average, we observed that during 
+these six days, all 302 stations exhibited ridership below 10% of their respective averages, indicating severe data 
+insufficiency. No other days showed station-level data absence. Consequently, these six days were excluded from 
+subsequent analyses.
+Weather correlation analysis. 
+Weather conditions significantly affect travel demand, which in turn 
+influences metro ridership. We calculated the daily ridership of the subway system and analyzed its correla-
+tion with precipitation and temperature in Fig. 5(a). The 24-hour rainfall data were categorized into two classes 
+based on a threshold of 5 millimeters, with rainfall exceeding this value indicating significant precipitation. The 
+point-biserial correlation between ridership and precipitation is noticeably higher on non-workdays, along with 
+a smaller p-value, revealing greater elasticity of travel demand to rainfall during non-workdays. The reduction 
+of travel demand due to high temperature is evidenced by the negative pearson correlation coefficients between 
+ridership and temperature on workdays and non-workdays. In summary, the intuitive correlation between metro 
+flow and weather patterns extracted from data supports the reliability of the metro dataset.
+Furthermore, an event study was conducted to analyze the impact of the rainstorm on June 10th, the second 
+Saturday of June, 2017. We targeted the study on three specific stations: Station #1136 and Station #1628 are 
+Disney Resort and Shanghai Wild Animal Park respectively, both of which are susceptible to rainstorms on 
+weekends. Station #643 is located at the center of the rainstorm. As shown in Fig. 5(b), the inflow counts of 
+these three stations dropped significantly compared to non-workday monthly average values during the extreme 
+weather event.
+Comparison to the reference data. 
+Another open-source Shanghai metro transit dataset (https://ling-
+boliu.com/Dataset.html) provides in-out flow counts of 288 metro stations from July to September 2015, at 
+15-minute intervals. Fortunately, with this dataset, we can identify the shared patterns between the reference 
+dataset and our own, thereby validating the quality and reliability of this work.
+However, the metro stations in the reference dataset were only identified by IDs, making it impossible to map 
+them to specific physical locations. Thus, we focused on the comparative analysis of statistical regularities across 
+the entire system. We divided a day into time bins of an hour for both workdays and non-workdays, resulting 
+in a total of 34 time bins. First, the total flow counts of each time bin were aggregated across the two datasets 
+and compared using scatter plots, as shown in the left panel of Fig. 6. Next, the variance of flow counts across 
+all stations in each particular time bin was calculated and visualized in the right panel of Fig. 6. The Pearson 
+Correlation Coefficients close to 1, along with low p-values, suggest that the patterns in our dataset closely match 
+those of the reference dataset.
+Usage Notes
+The Station Attributes Data and Flow Data are offered in CSV format, which is easy to access and process. For 
+storage efficiency, the OD Flow data was saved in a sparse matrix format (Table 2), where pairs of metro stations 
+with no flow during specific intervals are excluded from the dataset. Despite this optimization, the OD data file 
+remains large (12GB). The data on May 4th, May 8th, May 9th, June 16th, June 27th, and June 28th are incom-
+plete due to deficiencies in the raw data. Researchers and analysts may apply data imputation techniques to 
+address these gaps and utilize the dataset effectively.
+Both the in-out flow data and OD flow data could be exploited in studies involving traffic optimization, data 
+mining, human mobility, and urban science. For instance, station in-out flow data could be utilized to study 
+cities’ scaling rules28 and community structure29. OD flow data contributes to the construction of a dynamic 
+metro mobility network30, unveiling important patterns which further facilitate ridership prediction31 and urban 
+planning32.
+Date
+slot
+StartTime
+EndTime
+O-Station
+D-Station
+Flow
+CFlow
+HFlow
+NFlow
+20170501
+0
+060000
+061000
+112
+129
+1
+0
+0
+1
+20170501
+0
+060000
+061000
+112
+134
+1
+0
+0
+1
+20170501
+0
+060000
+061000
+112
+138
+1
+0
+0
+1
+20170501
+0
+060000
+061000
+112
+828
+1
+0
+1
+0
+…
+…
+…
+…
+…
+…
+…
+…
+…
+…
+20170831
+12545
+225000
+230000
+2057
+2036
+1
+0
+0
+1
+Table 2.  An example of Metro Station Origin-Destination Flow Data.
+
+PAGE 7
+7
+Scientific Data |         (2025) 12:1061  | https://doi.org/10.1038/s41597-025-05416-8
+www.nature.com/scientificdata
+www.nature.com/scientificdata/
+Code availability
+In this study, data processing, analysis, and visualization were carried out using Python 3.9 within Jupyter 
+Notebooks. The complete codebase is available on GitHub: https://github.com/Ariza-Sun/MetroFlow. The 
+origin-destination data and in-out flow data are too large to be hosted on a GitHub repository but can be found 
+at figshare26. Apart from these two files, all other data and metadata have been uploaded to the repository for 
+reference.
+Received: 24 April 2025; Accepted: 16 June 2025;
+Published: xx xx xxxx
+Fig. 5  (a) Correlation Analysis between ridership and weather: The first row of graphs presents an analysis of 
+the relationship between total passenger flow and precipitation, while the second row shows the correlation 
+between total passenger flow and temperature. Corr represents the point-biserial correlation and the pearson 
+correlation coefficient, respectively, for rainfall and temperature. p stands for probability value. (b) Event Study: 
+This analysis focuses on three metro stations on June 10th, during a heavy rainstorm in Shanghai. The two 
+curves represent hourly ridership on the event day and the monthly average values on non-workdays. The bars 
+indicate the recorded rainfall in millimeters.
+Fig. 6  Comparison of hourly flow counts and flow variance between our dataset and the reference dataset. The 
+x-axis denotes the statistical characteristics of the reference dataset, while the y-axis corresponds to those of the 
+proposed dataset. Corr represents the pearson correlation coefficient. p stands for probability value.
+
+PAGE 8
+8
+Scientific Data |         (2025) 12:1061  | https://doi.org/10.1038/s41597-025-05416-8
+www.nature.com/scientificdata
+www.nature.com/scientificdata/
+References
+	 1.	 Barbosa, H. et al. Human mobility: Models and applications. Phys. Reports 734, 1–74 (2018).
+	 2.	 Xu, Y. & González, M. C. Collective benefits in traffic during mega events via the use of information technologies. J. The Royal Soc. 
+Interface 14, 20161041 (2017).
+	 3.	 Yu, B., Yin, H. & Zhu, Z. Spatio-temporal graph convolutional networks: a deep learning framework for traffic forecasting. 
+In Proceedings of the 27th International Joint Conference on Artificial Intelligence, IJCAI’18, 3634–3640 (AAAI Press, 2018).
+	 4.	 Xu, Y., Çolak, S., Kara, E. C., Moura, S. J. & González, M. C. Planning for electric vehicle needs by coupling charging profiles with 
+urban mobility. Nat. Energy 3, 484–493 (2018).
+	 5.	 Abbiasov, T. et al. The 15-minute city quantified using human mobility data. Nat. Hum. Behav. 8, 445–455 (2024).
+	 6.	 Xu, Y. et al. Urban dynamics through the lens of human mobility. Nat. Comput. Sci. 3, 611–620 (2023).
+	 7.	 Kraemer, M. U. et al. The effect of human mobility and control measures on the covid-19 epidemic in china. Science 368, 493–497 
+(2020).
+	 8.	 Meekan, M. G. et al. The ecology of human mobility. Trends ecology & evolution 32, 198–210 (2017).
+	 9.	 Xu, Y. et al. Unraveling environmental justice in ambient pm2. 5 exposure in beijing: A big data approach. Comput. Environ. Urban 
+Syst. 75, 12–21 (2019).
+	10.	 Thornton, F. et al. Human mobility and environmental change: a survey of perceptions and policy direction. Popul. Environ. 40, 
+239–256 (2019).
+	11.	 Cui, J., Nelson, J. D., Beecroft, M. & Lin, D. Subway systems and tourism: An overview and implications. Res. Transp. Bus. & Manag. 
+57, 101205 (2024).
+	12.	 Lu, K., Liu, J., Zhou, X. & Han, B. A review of big data applications in urban transit systems. IEEE Transactions on Intell. Transp. Syst. 
+22, 2535–2552 (2020).
+	13.	 Ali, A., Kim, J. & Lee, S. Travel behavior analysis using smart card data. KSCE J. Civ. Eng. 20, 1532–1539 (2016).
+	14.	 Ma, X., Wu, Y.-J., Wang, Y., Chen, F. & Liu, J. Mining smart card data for transit riders’ travel patterns. Transp. Res. Part C: Emerg. 
+Technol. 36, 1–12 (2013).
+	15.	 Sun, L., Jin, J. G., Lee, D.-H., Axhausen, K. W. & Erath, A. Demand-driven timetable design for metro services. Transp. Res. Part C: 
+Emerg. Technol. 46, 284–299 (2014).
+	16.	 Shi, R.-J., Mao, B.-H., Ding, Y., Bai, Y. & Chen, Y. Timetable optimization of rail transit loop line with transfer coordination. Discret. 
+Dyn. Nat. Soc. 2016, 4627094 (2016).
+	17.	 Yin, J., Yang, L., Tang, T., Gao, Z. & Ran, B. Dynamic passenger demand oriented metro train scheduling with energy- efficiency and 
+waiting time minimization: Mixed-integer linear programming approaches. Transp. Res. Part B: Methodol. 97, 182–213 (2017).
+	18.	 Albrecht, T. Automated timetable design for demand-oriented service on suburban railways. Public transport 1, 5–20 (2009).
+	19.	 Li, Y. et al. Transit-oriented land planning model considering sustainability of mass rail transit. J. Urban Plan. Dev. 136, 243–248 
+(2010).
+	20.	 Hu, N., Legara, E. F., Lee, K. K., Hung, G. G. & Monterola, C. Impacts of land use and amenities on public transport use, urban 
+planning and design. Land use policy 57, 356–367 (2016).
+	21.	 Liu, Y., Liu, Z. & Jia, R. Deeppf: A deep learning based architecture for metro passenger flow prediction. Transp. Res. Part C: Emerg. 
+Technol. 101, 18–34 (2019).
+	22.	 Ma, X., Zhang, J., Du, B., Ding, C. & Sun, L. Parallel architecture of convolutional bi-directional lstm neural networks for network-
+wide metro ridership prediction. IEEE Transactions on Intell. Transp. Syst. 20, 2278–2288 (2018).
+	23.	 Liu, L. et al. Physical-virtual collaboration modeling for intra-and inter-station metro ridership prediction. IEEE Transactions on 
+Intell. Transp. Syst. 23, 3377–3391 (2020).
+	24.	 Chen, P., Fu, X. & Wang, X. A graph convolutional stacked bidirectional unidirectional-lstm neural network for metro ridership 
+prediction. IEEE Transactions on Intell. Transp. Syst. 23, 6950–6962 (2021).
+	25.	 Xie, P. et al. Spatio-temporal dynamic graph relation learning for urban metro flow prediction. IEEE Transactions on Knowl. Data 
+Eng. 35, 9973–9984 (2023).
+	26.	 Sun, P. et al. Human mobility datasets in the complex metro system of shanghai. https://doi.org/10.6084/m9.figshare.28844942.
+	27.	 Gonzalez, M. C., Hidalgo, C. A. & Barabasi, A.-L. Understanding individual human mobility patterns. nature 453, 779–782 (2008).
+	28.	 Li, R. et al. Simple spatial scaling rules behind complex cities. Nat. communications 8, 1841 (2017).
+	29.	 Shi, D. et al. Local dominance unveils clusters in networks. Commun. Phys. 7, 170 (2024).
+	30.	 Flores-Garrido, M. et al. Mobility networks in greater mexico city. Sci. data 11, 84 (2024).
+	31.	 Liu, L. et al. Online metro origin-destination prediction via heterogeneous information aggregation. IEEE Transactions on Pattern 
+Analysis Mach. Intell. 45, 3574–3589 (2022).
+	32.	 Lyu, Y. et al. Cb-planner: A bus line planning framework for customized bus systems. Transp. Res. Part C: Emerg. Technol. 101, 
+233–253 (2019).
+Acknowledgements
+We thank the SJTU AI for Science platform for computing support. This work was jointly supported by the 
+Shanghai Municipal Science and Technology Major Project (2021SHZDZX0102), the National Natural Science 
+Foundation of China (62102258), and the Fundamental Research Funds for the Central Universities.
+Author contributions
+P.S. and J.Y.: conceptualization, data curation, and writing original draft. Z.H., S.H. and S.X.: data validation. 
+W.W., W.G. and Y.F.: formal analysis and visualization. X.Z. and T.Y.: data collection. X.Y., Y.J. and Y.X.: 
+supervision and direction. P.S. and J.Y. contributed equally to this work. All authors participated in the review 
+and editing of the manuscript.
+Competing interests
+The authors declare no competing interests.
+Additional information
+Correspondence and requests for materials should be addressed to Y.J. or Y.X.
+Reprints and permissions information is available at www.nature.com/reprints.
+Publisher’s note Springer Nature remains neutral with regard to jurisdictional claims in published maps and 
+institutional affiliations.
+
+PAGE 9
+9
+Scientific Data |         (2025) 12:1061  | https://doi.org/10.1038/s41597-025-05416-8
+www.nature.com/scientificdata
+www.nature.com/scientificdata/
+Open Access This article is licensed under a Creative Commons Attribution-NonCommercial-­
+NoDerivatives 4.0 International License, which permits any non-commercial use, sharing, distribu-
+tion and reproduction in any medium or format, as long as you give appropriate credit to the original author(s) 
+and the source, provide a link to the Creative Commons licence, and indicate if you modified the licensed mate-
+rial. You do not have permission under this licence to share adapted material derived from this article or parts of it. 
+The images or other third party material in this article are included in the article’s Creative Commons licence, 
+unless indicated otherwise in a credit line to the material. If material is not included in the article’s Creative 
+­Commons licence and your intended use is not permitted by statutory regulation or exceeds the permitted 
+use, you will need to obtain permission directly from the copyright holder. To view a copy of this licence, visit 
+http://creativecommons.org/licenses/by-nc-nd/4.0/.
+ 
+© The Author(s) 2025

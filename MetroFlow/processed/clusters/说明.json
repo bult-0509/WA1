@@ -1,0 +1,12 @@
+{
+  "groups": 2,
+  "silhouette": 0.42685651841253425,
+  "features": 68,
+  "stations": 302,
+  "excluded_station_ids": [],
+  "random_state": 42,
+  "n_init": 10,
+  "start": "2017-05-01",
+  "end": "2017-08-31",
+  "note": "四个月有效数据的探索性内部评价；没有独立测试或未来预测验证。"
+}
