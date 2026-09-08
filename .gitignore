@@ -1,0 +1,10 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.idea/
+.venv/
+.runtime/
+dist/
+tmp/
+运行记录/
+*.log

@@ -1,0 +1,424 @@
+"""本地客流分析界面及动态客流地图。日常演示无需原始大文件。"""
+from pathlib import Path
+import json
+import html
+import numpy as np
+import pandas as pd
+import plotly.express as px
+import plotly.graph_objects as go
+import streamlit as st
+import streamlit.components.v1 as components
+from src import analysis as a, charts as c
+from src.data_processing import FLOW
+from src.metro_map import build_metro_map_html, build_station_types_map_html
+
+ROOT = Path(__file__).resolve().parent
+DATA = ROOT / 'MetroFlow/processed'
+st.set_page_config(page_title='上海地铁客流数据看板 · 地铁客流分析1', page_icon='assets/favicon.svg', layout='wide', initial_sidebar_state='expanded')
+st.html("""
+<style>
+.block-container { max-width: 1200px; }
+.hero { margin-bottom: 24px; }
+.hero h1 { font-size: 28px; }
+.eyebrow { display: none; }
+</style>
+""")
+
+
+@st.cache_data(show_spinner='正在读取本地数据…')
+def load_data(data_dir, updated_at):
+    tables = {name: pd.read_parquet(data_dir / f'{name}.parquet') for name in
+              ['station_hourly', 'station_daily', 'network_daily', 'stations', 'calendar', 'weather_daily']}
+    tables['quality'] = json.loads((data_dir / 'quality.json').read_text(encoding='utf-8'))
+    return tables
+
+
+def insight(text):
+    st.html(f'<div class="insight">{html.escape(text)}</div>')
+
+
+def show_plot(fig, key):
+    # 图题和下载文件名记录实际筛选；PNG由浏览器本地生成。
+    detail = context.replace(' · ', '<br>', 1)
+    fig.update_layout(title_text=f'{fig.layout.title.text}<br><sup>{detail}</sup>', margin_t=95)
+    config = dict(c.CONFIG)
+    config['toImageButtonOptions'] = {'format': 'png', 'filename': f'{key}_{dates[0]}_{dates[1]}', 'scale': 2}
+    st.plotly_chart(fig, use_container_width=True, config=config, key=key)
+
+
+def table_export(table, key, label='查看数据并导出 CSV'):
+    with st.expander(label):
+        renamed = table.rename(columns={'station_id': '站点ID', 'name': '站名', 'date': '日期',
+            'hour': '小时', 'value': '人次', 'days': '有效天数', 'inFlow': '进站人次', 'outFlow': '出站人次',
+            'is_workday': '工作日标记', 'cluster': '分组', 'groups': '分组数', 'silhouette': '轮廓系数',
+            'proportion': '占比', 'temperature_2m': '日均温度_摄氏度', 'rain': '日雨量_mm'})
+        st.dataframe(renamed, hide_index=True, use_container_width=True)
+        export = renamed.copy()
+        export['筛选范围'] = context
+        export['站点范围'] = ','.join(map(str, selected)) if selected and not fixed_network and not poi_view and not cluster_view else '全部站点'
+        export['日期类型'] = '固定聚类结果' if cluster_view else day_type
+        export['有效日期数'] = int(h.date.nunique()) if not cluster_view else int(tables['quality']['valid_days'])
+        st.download_button('下载 CSV', export.to_csv(index=False).encode('utf-8-sig'), f'{key}.csv', 'text/csv', on_click='ignore', key=f'download_{key}')
+
+
+with st.sidebar:
+    st.html('<div class="side-brand"><b>上海地铁客流数据看板</b><p>METROFLOW · SHANGHAI</p></div>')
+    page = st.radio('分析导航', ['项目概览', '时间规律', '站点空间', '动态客流地图', '出行模式', '天气关联', 'POI与客流', '站点类型地图', '数据质量与说明'], key='page')
+
+if page == '站点类型地图':
+    with st.sidebar:
+        st.divider()
+        st.caption('按站名或 ID 搜索，筛选功能类型，点击站点查看设施构成。')
+        st.caption('本页使用独立的 500 米 POI 分类结果，不使用客流日期筛选。')
+    try:
+        map_html = build_station_types_map_html(ROOT / 'MetroFlow/analysis_output')
+    except (OSError, UnicodeError) as error:
+        st.error(f'站点类型地图资源读取失败：{error}')
+    else:
+        components.html(map_html, height=1250, scrolling=True)
+    st.stop()
+
+if page == '动态客流地图':
+    with st.sidebar:
+        st.divider()
+        st.caption('在地图内选择日期、播放或暂停、调整速度，并拖动底部时间轴查看每10分钟的客流变化。')
+        st.caption('本页使用独立的边客流数据，不使用其他分析页的筛选条件。')
+    st.title('动态客流地图')
+    st.write('按日期和10分钟时段观察上海地铁站间客流变化，可缩放地图并悬停查看站名。')
+    st.caption('边客流由 OD 数据按最短路径分配并双向合并，表示估算的区间经过人次；各边合计会重复计入同一行程，不等于全网进出站人次。日期列表沿用地图自身的低流量异常日过滤规则。')
+    try:
+        map_html = build_metro_map_html(ROOT / 'my-folder')
+    except (OSError, UnicodeError) as error:
+        st.error(f'动态地图资源读取失败：{error}')
+        st.info('请保留完整的 my-folder 文件夹，包括地图、客流数据及 lib/leaflet 资源。')
+    else:
+        components.html(map_html, height=780, scrolling=False)
+        st.caption('默认使用离线底图；右下角可切换在线底图（需要网络）。线条表示站点邻接关系，并非精确轨道。')
+    st.stop()
+
+try:
+    tables = load_data(DATA, (DATA / 'quality.json').stat().st_mtime_ns)
+except (OSError, ValueError, KeyError) as error:
+    st.error(f'本地数据尚未准备完整：{error}')
+    st.info('请完整解压便携包；开发环境请按README准备原始数据后运行 prepare_data.py。')
+    st.stop()
+
+stations = tables['stations']
+names = dict(zip(stations.station_id, stations.name))
+with st.sidebar:
+    st.divider()
+    st.caption('筛选数据')
+    cluster_view = page == '出行模式' and st.session_state.get('mode', '进出方向') == '站点聚类'
+    poi_view = page == 'POI与客流'
+    fixed_network = page in ['天气关联', '数据质量与说明']
+    dates_value = st.date_input('日期范围', value=(pd.Timestamp('2017-05-01').date(), pd.Timestamp('2017-08-31').date()),
+        min_value=pd.Timestamp('2017-05-01').date(), max_value=pd.Timestamp('2017-08-31').date(), disabled=cluster_view, key='dates')
+    day_type = st.selectbox('日期类型', ['全部', '工作日', '非工作日'], disabled=cluster_view, key='day_type')
+    selected = st.multiselect('选择站点（留空为全部）', stations.station_id.tolist(),
+        format_func=lambda x: f'{names[x]} · {x}', disabled=fixed_network or poi_view, key='stations', placeholder='全部302站')
+    direction_label = st.selectbox('客流方向', ['进站', '出站'] + (['进出总量'] if page == '站点空间' else []),
+        disabled=fixed_network or cluster_view or page == '出行模式', key='direction')
+    st.divider()
+    st.caption('2017年5—8月 · 302站\n\n聚合客流数据 · 全程本地运行')
+    st.caption('图表右上角相机按钮可下载 PNG。')
+
+if len(dates_value) != 2:
+    st.info('请选择完整的开始和结束日期。')
+    st.stop()
+dates = tuple(dates_value)
+direction = {v: k for k, v in a.FLOW_NAMES.items()}[direction_label]
+if fixed_network:
+    direction = 'inFlow'
+filter_stations = None if fixed_network or poi_view else selected
+h = a.filter_data(tables['station_hourly'], dates, day_type, filter_stations)
+d = a.filter_data(tables['station_daily'], dates, day_type, filter_stations)
+n = a.filter_data(tables['network_daily'], dates, day_type)
+scope = f'所选{len(selected)}站' if selected and not fixed_network and not poi_view else '全网'
+context = f'{dates[0]} — {dates[1]} · {day_type} · {scope} · {a.FLOW_NAMES[direction]}人次'
+descriptions = {
+    '项目概览': ('项目概览', '从302个站点的进出客流出发，观察时间高峰、空间分布与出行模式。每一张图都对应一个可以用数据回答的问题。'),
+    '时间规律': ('时间规律', '按有效日期计算小时日均，比较工作日和非工作日的高峰形态；日期热力图展示每天的差异。'),
+    '站点空间': ('站点空间', '把站点客流放回真实地理位置，结合日均排名观察空间分布。人次反映规模，不直接等同于车厢拥挤程度。'),
+    '出行模式': ('出行模式', '对照早晚进出方向、三类行程构成和站点分组，解释曲线中的差异。'),
+    '天气关联': ('天气关联', '以日期为样本，把全网进站量与城市代表点天气对照；工作日和非工作日分别观察。'),
+    'POI与客流': ('站点周边功能与客流', '比较1公里站点圈的设施密度、功能组合和客流差异。'),
+    '数据质量与说明': ('数据质量与说明', '保留原始检查结果，明确异常日期、字段含义和分析边界，让图表中的每一个数字有据可查。')}
+title, intro = descriptions[page]
+st.html(f'<section class="hero"><div class="eyebrow">SHANGHAI / 2017 · {html.escape(page)}</div><h1>{title}</h1><p>{intro}</p></section>')
+st.caption(context if not cluster_view else '站点聚类使用四个月有效数据的固定结果；日期和方向筛选不改变分组。')
+if h.empty and page != '数据质量与说明' and not cluster_view:
+    st.warning('当前选择没有有效数据。六个计数缺损日已排除，请扩大日期范围或改选其他日期。')
+    st.stop()
+
+if page == '项目概览':
+    days = a.daily_series(h, direction)
+    values = days.value
+    cols = st.columns(4)
+    for col, label, value in zip(cols, ['累计客流 / 万人次', '日均客流 / 万人次', '有效日期 / 天', '分析站点 / 个'],
+            [f'{values.sum()/10000:,.1f}', f'{values.mean()/10000:,.1f}', str(len(days)), str(h.station_id.nunique())]):
+        col.metric(label, value)
+    st.write('')
+    left, right = st.columns([1.6, 1])
+    with left:
+        plot_days = days.set_index('date').reindex(pd.date_range(*dates)).rename_axis('date').reset_index()
+        fig = c.line(plot_days, 'date', 'value', title='四个月的客流起伏')
+        show_plot(fig, 'overview_daily')
+    with right:
+        profile = a.hourly_profile(h, direction)
+        show_plot(c.line(profile, 'hour', 'value', '日类型', '工作日与非工作日'), 'overview_hourly')
+    peak = days.loc[days.value.idxmax()]
+    insight(f'当前范围内，单日最高出现在{peak.date:%Y年%m月%d日}，为{peak.value/10000:,.1f}万人次。日均为{values.mean()/10000:,.1f}万人次；六个原始计数缺损日不参与计算。')
+    summary = pd.DataFrame({'统计量':['总量','日均','日中位数','日最小值','日最大值'],
+        '人次':[values.sum(),values.mean(),values.median(),values.min(),values.max()]})
+    table_export(summary, 'descriptive_statistics', '查看描述性统计并导出 CSV')
+    table_export(days, 'overview_statistics')
+
+elif page == '时间规律':
+    profile = a.hourly_profile(h, direction)
+    left, right = st.columns([1.1, 1])
+    with left:
+        show_plot(c.line(profile, 'hour', 'value', '日类型', '小时客流：按有效日日均'), 'hourly_profile')
+    with right:
+        daily_hour = h.assign(value=a.direction_values(h, direction)).groupby(['date', 'hour']).value.sum().unstack()
+        daily_hour = daily_hour.reindex(pd.date_range(*dates))
+        fig = c.style(go.Figure(go.Heatmap(z=daily_hour.to_numpy(), x=daily_hour.columns,
+            y=daily_hour.index.strftime('%m-%d'), colorscale='Teal', colorbar={'title': '人次'},
+            hoverongaps=False, hovertemplate='%{y} %{x}时<br>%{z:,.0f}人次<extra></extra>')), '逐日逐小时客流')
+        fig.update_xaxes(title='小时'); fig.update_yaxes(title='日期', type='category', autorange='reversed',
+            tickmode='array', tickvals=daily_hour.index.strftime('%m-%d')[::14])
+        show_plot(fig, 'time_heatmap')
+    sentences = []
+    for day_name, group in profile.groupby('日类型'):
+        top = group[group.value.eq(group.value.max())]
+        sentences.append(f'{day_name}最高小时为'+ '、'.join(f'{int(x)}时' for x in top.hour) + f'，小时日均{group.value.max()/10000:.1f}万人次（{int(group.days.max())}个有效日）')
+    insight('；'.join(sentences) + '。热力图空白表示该日未纳入有效分析，不代表零客流。')
+    if profile.is_workday.nunique() < 2:
+        st.info('当前只含一种日期类型，不能据此比较工作日与非工作日。')
+    table_export(profile, 'time_profile')
+
+elif page == '站点空间':
+    ranking = a.station_ranking(d, direction).merge(stations[['station_id', 'name']], on='station_id', validate='one_to_one')
+    left, right = st.columns([1.25, 1])
+    with left:
+        show_plot(c.station_map(stations, ranking, selected, title=f'站点地理图 · {a.FLOW_NAMES[direction]}'), 'station_map')
+        st.caption('使用发布方经纬度及邻接关系绘制，无在线底图；连线不代表精确轨道。坐标参考系未由发布方声明。')
+    with right:
+        top = ranking.head(20).sort_values('value')
+        fig = c.bar(top, 'value', 'name', title='日均客流前20站', orientation='h')
+        fig.update_layout(height=535, yaxis_title=None, xaxis_title='日均人次')
+        show_plot(fig, 'station_ranking')
+    top = ranking.iloc[0]
+    insight(f'当前范围中，{top["name"]}（{int(top.station_id)}）日均{top.value:,.0f}人次，排名第1。排名统一使用{int(top.days)}个有效日期；站点规模不能直接推断列车满载或拥挤程度。')
+    table_export(ranking, 'station_ranking_data')
+
+elif page == '出行模式':
+    mode = st.segmented_control('模式视图', ['进出方向', '出行构成', '站点聚类'], default='进出方向', key='mode', selection_mode='single')
+    # 控件回调后重跑，侧栏依当前模式正确禁用不适用筛选。
+    if (mode == '站点聚类') != cluster_view:
+        st.rerun()
+    if mode == '进出方向':
+        profile = h.groupby(['date', 'hour'])[['inFlow', 'outFlow']].sum().groupby('hour').mean().reset_index()
+        long = profile.melt('hour', var_name='方向', value_name='value'); long['方向'] = long['方向'].map(a.FLOW_NAMES)
+        context = f'{dates[0]} — {dates[1]} · {day_type} · {scope} · 进出人次'
+        show_plot(c.line(long, 'hour', 'value', '方向', '进站与出站的小时曲线'), 'direction_curves')
+        peaks = a.peak_direction(h).merge(stations[['station_id', 'name']], on='station_id')
+        shown = peaks if selected else peaks[peaks.station_id.isin(a.station_ranking(d).head(10).station_id)]
+        fig = c.bar(shown, 'name', '方向指数', '时段', '早晚进出方向 · 默认显示繁忙前10站', barmode='group')
+        fig.update_yaxes(range=[-1, 1]); fig.update_xaxes(title=None)
+        show_plot(fig, 'direction_index')
+        insight('方向指数 =（进站−出站）/（进站+出站）。正值表示进站较多，负值表示出站较多；早峰取07:00–09:00，晚峰取17:00–19:00。它描述进出方向，不直接证明周边土地用途。')
+        table_export(peaks, 'direction_data')
+    elif mode == '出行构成':
+        chosen = st.radio('构成方向', ['进站', '出站'], horizontal=True)
+        field = 'inFlow' if chosen == '进站' else 'outFlow'
+        context = f'{dates[0]} — {dates[1]} · {day_type} · {scope} · {chosen}人次'
+        comp = a.trip_composition(h, field)
+        left, right = st.columns(2)
+        with left:
+            show_plot(c.bar(comp, '出行类型', '人次', '出行类型', '三类出行的绝对规模'), 'trip_counts')
+        with right:
+            comp['统计范围'] = '当前范围'
+            fig = c.bar(comp, '统计范围', '占比', '出行类型', '三类出行的构成比例', barmode='stack')
+            fig.update_yaxes(tickformat='.0%', range=[0,1]); show_plot(fig, 'trip_proportions')
+        suffix = field
+        type_cols = [p + suffix for p in a.TYPE_NAMES]
+        series = h.groupby(['date','hour'])[type_cols].sum().groupby('hour').mean().reset_index()
+        long = series.melt('hour', var_name='出行类型', value_name='value')
+        long['出行类型'] = long['出行类型'].map({p+suffix:v for p,v in a.TYPE_NAMES.items()})
+        show_plot(c.line(long,'hour','value','出行类型','各类出行的小时日均'), 'trip_hourly')
+        top = comp.loc[comp['占比'].idxmax()] if comp['占比'].notna().any() else None
+        insight(f'当前{chosen}数据中，'+(f'{top["出行类型"]}占比最高，为{top["占比"]:.1%}。' if top is not None else '总量为0，无法计算占比。')+'C/HBO/NHB是发布方推断的行程类别，本组没有重新训练分类模型。')
+        table_export(comp, 'trip_composition')
+    elif mode == '站点聚类':
+        try:
+            labels = pd.read_csv(DATA/'clusters/labels.csv')
+            profiles = pd.read_csv(DATA/'clusters/profiles.csv')
+            evaluation = pd.read_csv(DATA/'clusters/evaluation.csv')
+            meta = json.loads((DATA/'clusters/说明.json').read_text(encoding='utf-8'))
+        except (OSError, ValueError) as error:
+            st.error(f'聚类结果不可用，请在开发机重新准备数据：{error}'); st.stop()
+        context = '2017-05-01 — 2017-08-31 · 固定分组 · 排除六个缺损日'
+        left, middle, right = st.columns(3)
+        left.metric('站点分组', f'{meta["groups"]} 组'); middle.metric('轮廓系数', f'{meta["silhouette"]:.3f}'); right.metric('参与站点', meta['stations'])
+        group = st.selectbox('查看分组', sorted(labels.cluster.unique()), format_func=lambda x:f'第{x}组')
+        chosen_ids = labels.loc[labels.cluster.eq(group)].sort_values('center_distance').station_id.tolist()
+        left, right = st.columns([1.1,1])
+        with left:
+            show_plot(c.station_map(stations, labels, selected, True, '相似曲线站点的空间分组'), 'cluster_map')
+        with right:
+            p = profiles[profiles.cluster.eq(group)].copy()
+            p['曲线'] = p.is_workday.map(a.DAY_NAMES) + ' · ' + p.direction.map(a.FLOW_NAMES)
+            fig = c.line(p,'hour','proportion','曲线',f'第{group}组的平均曲线')
+            fig.update_yaxes(tickformat='.0%'); show_plot(fig, 'cluster_profiles')
+            st.caption(f'本组 {len(chosen_ids)} 站。最接近组平均曲线的代表站：'+ '、'.join(names[x] for x in chosen_ids[:8]) + (' 等' if len(chosen_ids)>8 else ''))
+        show_plot(c.bar(evaluation,'groups','silhouette',title='候选组数的轮廓系数'), 'cluster_evaluation')
+        insight('按工作日、非工作日的进出站小时比例分组，避免只按大站小站划分。分3组为初始参照，比较2–5组后选择轮廓系数最高者。评价使用同一批已有数据，不代表未来预测能力。')
+        counts = labels.groupby('cluster').size().rename('站点数').reset_index()
+        st.dataframe(counts.rename(columns={'cluster':'分组'}),hide_index=True)
+        table_export(labels.drop(columns=['center_distance']).merge(stations[['station_id','name']],on='station_id'), 'cluster_members')
+        table_export(evaluation, 'cluster_scores')
+
+elif page == '天气关联':
+    joined, stats = a.weather_analysis(n, tables['weather_daily'])
+    if joined.empty:
+        st.warning('当前范围没有同时具备完整天气与有效客流的日期。'); st.stop()
+    left, right = st.columns(2)
+    with left:
+        fig = c.style(px.scatter(joined,x='temperature_2m',y='inFlow',color='日类型',color_discrete_sequence=c.COLORS,
+            hover_data=['date'],labels=c.LABELS), '温度与全网日进站量')
+        show_plot(fig,'weather_temperature')
+    with right:
+        fig = c.style(px.scatter(joined,x='rain',y='inFlow',color='日类型',color_discrete_sequence=c.COLORS,
+            hover_data=['date'],labels=c.LABELS), '雨量与全网日进站量')
+        show_plot(fig,'weather_rain')
+    fig = c.style(px.box(joined,x='日类型',y='inFlow',color='降雨情况',points='all',labels=c.LABELS,color_discrete_sequence=c.COLORS), '同类日期的有雨与无雨比较')
+    show_plot(fig,'weather_comparison')
+    st.dataframe(stats,hide_index=True,use_container_width=True)
+    insight(f'当前有{len(joined)}个客流与天气都完整的日期。正相关表示两者较常同向变化，负相关表示反向变化；不能据此判断天气导致了客流变化。月份、节假日等也可能影响结果。')
+    st.caption('天气为城市代表点（31.2222°N，121.4581°E），不是每个站点的观测。相关系数使用Spearman方法，按日期类型分别计算；样本过少或变量恒定时不计算。')
+    table_export(stats,'weather_correlations'); table_export(joined,'weather_daily')
+
+elif page == 'POI与客流':
+    try:
+        tables['poi_stations'] = pd.read_parquet(DATA / 'poi_stations.parquet')
+        tables['poi_quality'] = json.loads((DATA / 'poi_quality.json').read_text(encoding='utf-8'))
+    except (OSError, ValueError) as error:
+        st.error(f'POI 数据读取失败：{error}')
+        st.stop()
+    poi = tables['poi_stations']
+    quality = tables['poi_quality']
+    linked, correlations, density_comparison, composition = a.poi_flow_analysis(poi, d, direction)
+    rho = correlations.iloc[0]
+    median_poi = linked.poi_count_1000m.median()
+    columns = st.columns(4)
+    values = [f'{quality["raw_rows"] / 10000:,.1f} 万', f'{quality["functional_rows"] / 10000:,.1f} 万',
+              f'{median_poi:,.0f}', f'{rho["Spearman相关系数"]:.3f}']
+    labels = ['原始 POI', '用于功能分析', '站点圈 POI 中位数', '密度—客流相关']
+    for column, label, value in zip(columns, labels, values):
+        column.metric(label, value)
+
+    left, right = st.columns([1.15, 1])
+    with left:
+        scatter_data = linked[linked.poi_count_1000m.gt(0)]
+        scatter = px.scatter(scatter_data, x='poi_count_1000m', y='flow', color='dominant_group', size='diversity',
+            hover_name='name', hover_data={'station_id': True, 'poi_count_1000m': ':,', 'flow': ':,.0f',
+                                           'diversity': ':.3f', 'dominant_group': True},
+            labels={'poi_count_1000m': '1公里功能POI数', 'flow': f'站点日均{a.FLOW_NAMES[direction]}人次',
+                    'dominant_group': '主要功能组', 'diversity': '功能多样性'},
+            color_discrete_sequence=c.COLORS)
+        scatter.update_xaxes(type='log'); scatter.update_yaxes(type='log')
+        show_plot(c.style(scatter, '设施密度与客流规模', 535), 'poi_flow_scatter')
+        st.caption('横纵轴采用对数刻度，圆点大小表示功能多样性。相关系数按302个站点计算；上海市POI不覆盖位于昆山的花桥、光明路两站，散点图不绘制其零值。')
+    with right:
+        poi_map = linked[['station_id', 'poi_count_1000m']].rename(columns={'poi_count_1000m': 'value'})
+        show_plot(c.station_map(stations, poi_map, title='1公里站点圈功能POI分布', value_label='POI数'), 'poi_station_map')
+        st.caption('站点圈允许重叠，同一POI可能进入相邻站点的统计；地图用于比较站点，不可跨站相加。')
+
+    lower = density_comparison.iloc[0]
+    upper = density_comparison.iloc[-1]
+    interval = f'{rho["95%区间下限"]:.3f}～{rho["95%区间上限"]:.3f}'
+    ratio = upper['客流中位数'] / lower['客流中位数'] if lower['客流中位数'] else np.nan
+    insight(f'1公里功能POI数与站点日均{a.FLOW_NAMES[direction]}客流的Spearman相关系数为{rho["Spearman相关系数"]:.3f}，重复抽样95%区间为{interval}。高密度组的客流中位数约为低密度组的{ratio:.2f}倍；这是同向关系，不表示POI增加会直接导致客流增长。')
+
+    left, right = st.columns(2)
+    with left:
+        comparison_fig = px.bar(density_comparison, x='density_group', y='客流中位数',
+            category_orders={'density_group': ['低密度', '中低密度', '中高密度', '高密度']},
+            labels={'density_group': '1公里POI密度分组', '客流中位数': f'站点日均{a.FLOW_NAMES[direction]}人次'},
+            color='density_group', color_discrete_sequence=c.COLORS)
+        show_plot(c.style(comparison_fig, '按POI密度四等分比较客流'), 'poi_density_groups')
+    with right:
+        difference = composition[['功能组', '占比差']].drop_duplicates().sort_values('占比差')
+        difference['方向'] = np.where(difference['占比差'].ge(0), '客流前25%更高', '客流后25%更高')
+        difference_fig = px.bar(difference, x='占比差', y='功能组', orientation='h',
+            color='方向', labels={'占比差': '两组POI构成占比差'}, color_discrete_sequence=[c.COLORS[0], c.COLORS[1]])
+        difference_fig.update_xaxes(tickformat='.1%'); difference_fig.add_vline(x=0, line_color='#8799A3', line_width=1)
+        show_plot(c.style(difference_fig, '高低客流站的周边功能差异'), 'poi_composition_difference')
+        st.caption('正值表示该功能在客流前25%站点周边占比更高；比较的是构成比例，不受POI总量直接影响。')
+
+    st.subheader('单站结构与偏离站点')
+    focus = st.selectbox('查看一个站点', linked.sort_values('flow', ascending=False).station_id,
+                         format_func=lambda x: f'{names[x]} · {x}', key='poi_focus_station')
+    station = linked.loc[linked.station_id.eq(focus)].iloc[0]
+    group_columns = [column for column in linked if column.startswith('group_')]
+    station_groups = pd.DataFrame({'功能组': [x.removeprefix('group_') for x in group_columns],
+                                   'POI数': station[group_columns].to_numpy(int)})
+    station_groups['占比'] = station_groups['POI数'] / max(int(station_groups['POI数'].sum()), 1)
+    if not station_groups['POI数'].sum():
+        st.info('当前站点没有覆盖到功能 POI，构成占比显示为零。')
+    left, right = st.columns([1, 1.3])
+    with left:
+        station_fig = px.bar(station_groups.sort_values('占比'), x='占比', y='功能组', orientation='h',
+                             color='功能组', color_discrete_sequence=c.COLORS)
+        station_fig.update_xaxes(tickformat='.0%')
+        show_plot(c.style(station_fig, f'{station["name"]} · 1公里功能构成'), 'poi_station_composition')
+    with right:
+        high = linked.nlargest(5, 'rank_gap').assign(偏离方向='客流排名高于POI排名')
+        low = linked.nsmallest(5, 'rank_gap').assign(偏离方向='POI排名高于客流排名')
+        outliers = pd.concat([high, low], ignore_index=True)
+        st.dataframe(outliers[['name', 'station_id', '偏离方向', 'flow', 'poi_count_1000m', 'diversity', 'rank_gap']]
+            .rename(columns={'name': '站名', 'station_id': '站点ID', 'flow': f'日均{a.FLOW_NAMES[direction]}人次',
+                             'poi_count_1000m': '1公里POI数', 'diversity': '多样性', 'rank_gap': '百分位差'}),
+            hide_index=True, use_container_width=True)
+        st.caption('百分位差用于发现“客流规模与周边设施密度不一致”的站点，可能与换乘、线路位置、枢纽功能或数据覆盖有关。')
+    table_export(linked, 'poi_station_analysis')
+    table_export(correlations, 'poi_correlations')
+    table_export(density_comparison, 'poi_density_comparison')
+    table_export(composition, 'poi_composition_comparison')
+
+    with st.expander('数据质量与计算口径'):
+        st.write(f'原始{quality["raw_rows"]:,}行；按“名称、地址、坐标、细分类”移除候选重复{quality["candidate_duplicates_removed"]:,}行。'
+                 f'电话字段缺失{quality["missing_cells"]["TELEPHONE"]:,}行，但不参与分析；一级类型和坐标没有缺失。')
+        st.write(f'剔除仅作地图标注的{len(quality["excluded_base_types"])}类一级类型后，保留{quality["functional_rows"]:,}个功能POI。'
+                 '多样性采用归一化Shannon指数，范围0—1，越高表示九类功能越均衡。')
+        st.write(f'站点坐标转换前，与最近“地铁站”POI的中位距离为{quality["median_nearest_subway_m_before_conversion"]:,.1f}米；'
+                 f'统一坐标后为{quality["median_nearest_subway_m_after_conversion"]:,.1f}米，'
+                 f'{quality["stations_within_300m_after_conversion"]}/{quality["station_count"]}个站在300米内匹配到地铁站POI。')
+        st.caption('POI为2017年静态快照，客流为2017年5—8月。站点圈采用直线距离，不代表实际步行路径；相关和分组比较均不能证明因果。')
+
+else:
+    q = tables['quality']
+    cols = st.columns(4)
+    for col,label,value in zip(cols,['原始记录 / 行','原始字段 / 个','有效日期 / 天','计数缺损日 / 天'],
+                               [f'{q["raw_rows"]:,}',q['columns'],q['valid_days'],len(q['excluded_days'])]): col.metric(label,value)
+    checks = pd.DataFrame({'检查项':['缺失单元格','完全重复记录','重复键冲突记录','非法流量记录','分项加和不一致记录','进出均为0记录'],
+        '数量':[q[x] for x in ['missing_cells','exact_duplicates_removed','conflicting_rows','invalid_count_rows','component_mismatch_rows','zero_in_out_rows']]})
+    left,right=st.columns([1,1.3])
+    with left:
+        st.subheader('真实检查结果'); st.dataframe(checks,hide_index=True,use_container_width=True)
+    with right:
+        bad=pd.DataFrame(q['excluded_days'])
+        context='2017年5—8月 · 原始质量检查 · 六个缺损日'
+        show_plot(c.bar(bad,'date','inFlow',title='六个缺损日仍有残余计数'), 'quality_bad_days')
+    network=tables['network_daily']
+    st.write(f'原始123日日均进站：{network.inFlow.mean()/10000:,.1f}万人次；排除六日后117日日均进站：{network.loc[network.is_valid,"inFlow"].mean()/10000:,.1f}万人次。')
+    insight('六个异常日的记录行数完整，但客流计数严重不足。保留原值并排除常规分析，不将缺损补成0；正常零值和真实高峰也不会被直接删除。')
+    st.subheader('字段与数据边界')
+    st.dataframe(pd.DataFrame({'字段':['date / startTime / endTime','station','inFlow / outFlow','C / HBO / NHB','isWorday','lon / lat','temperature_2m / rain'],
+        '说明':['本地日期及10分钟区间，起点包含、终点不包含','302站的站点ID','聚合进出人次，不是去重人数','发布方推断：通勤 / 居家其他 / 非居家','源日历工作日标记，包含调休','发布方经纬度；坐标参考系未声明','代表点温度（°C）与小时雨量（mm）']}),hide_index=True,use_container_width=True)
+    st.markdown('数据：[MetroFlow作者仓库](https://github.com/Ariza-Sun/MetroFlow) · [Figshare数据](https://doi.org/10.6084/m9.figshare.28844942) · [数据论文](https://doi.org/10.1038/s41597-025-05416-8)。数据采用 CC BY 4.0，展示范围为2017年5—8月。来源链接供查证，系统运行不依赖联网。')
+    st.caption('开发工具：OpenAI Codex。成员：林睿信、吴旻昊、朱子墨、邢雨晨，计划分工各25%。AI过程与实际验证材料另行留档。')
+    table_export(checks,'quality_checks'); table_export(bad,'quality_excluded_days')
+
+st.divider()
+st.caption('上海地铁客流数据看板 · 软件开发实践1　｜　2017年历史客流 · 原始数据来源 MetroFlow　｜　分析结果以当前有效数据为准')

@@ -1,0 +1,61 @@
+{
+  "raw_rows": 3788892,
+  "columns": 13,
+  "missing_cells": 0,
+  "exact_duplicates_removed": 0,
+  "conflicting_rows": 0,
+  "invalid_time_rows": 0,
+  "invalid_count_rows": 0,
+  "component_mismatch_rows": 0,
+  "unknown_station_rows": 0,
+  "invalid_rows": 0,
+  "zero_in_out_rows": 153301,
+  "stations": 302,
+  "days": 123,
+  "valid_days": 117,
+  "hourly_rows": 631482,
+  "daily_rows": 37146,
+  "excluded_days": [
+    {
+      "date": "2017-05-04",
+      "inFlow": 11132,
+      "outFlow": 11132
+    },
+    {
+      "date": "2017-05-08",
+      "inFlow": 3470,
+      "outFlow": 3470
+    },
+    {
+      "date": "2017-05-09",
+      "inFlow": 7453,
+      "outFlow": 7453
+    },
+    {
+      "date": "2017-06-16",
+      "inFlow": 24940,
+      "outFlow": 24940
+    },
+    {
+      "date": "2017-06-27",
+      "inFlow": 964,
+      "outFlow": 964
+    },
+    {
+      "date": "2017-06-28",
+      "inFlow": 6840,
+      "outFlow": 6840
+    }
+  ],
+  "source": "https://doi.org/10.6084/m9.figshare.28844942",
+  "license": "CC BY 4.0",
+  "date_start": "2017-05-01",
+  "date_end": "2017-08-31",
+  "input_directory": "MetroFlow",
+  "input_files": [
+    "metroData_InOutFlow.csv",
+    "stationInfo.csv",
+    "MetaData/workday_calendar.csv",
+    "MetaData/shanghai_weatherHourly.csv"
+  ]
+}
